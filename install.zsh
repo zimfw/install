@@ -12,6 +12,16 @@ autoload -Uz is-at-least && if ! is-at-least 5.2; then
 fi
 print -P "%F{green}✓%f Using Zsh version ${ZSH_VERSION}"
 
+{
+_replace_prefix() {
+  local suffix=${2#${(e)1}}
+  if [[ ${2} != ${suffix} ]]; then
+    print ${1}${suffix}
+  else
+    print ${2}
+  fi
+}
+
 # Check ZIM_HOME
 local home_str='${ZDOTDIR:-${HOME}}'
 local zim_home_str=${home_str}/.zim
@@ -21,12 +31,7 @@ if (( ! ${+ZIM_HOME} )); then
 elif [[ ${ZIM_HOME} == ${(e)zim_home_str} ]]; then
   print -P '%F{green}✓%f Your ZIM_HOME is the default one.'
 else
-  local suffix=${ZIM_HOME#${(e)home_str}}
-  if [[ ${ZIM_HOME} != ${suffix} ]]; then
-    zim_home_str=${home_str}${suffix}
-  else
-    zim_home_str=${ZIM_HOME}
-  fi
+  zim_home_str=$(_replace_prefix ${home_str} ${ZIM_HOME})
   print -P "%F{green}✓%f Your ZIM_HOME is customized to ${zim_home_str}"
 fi
 if [[ -e ${ZIM_HOME} ]]; then
@@ -66,17 +71,17 @@ if [[ -e ${zshrc} ]]; then
 fi
 
 # Clone Zim repo
-print -n "Installing Zim in ${ZIM_HOME} …"
+print -n "Installing Zim in ${zim_home_str} …"
 local err
 if err=$(command git clone -b develop -q https://github.com/zimfw/zimfw.git ${ZIM_HOME} 2>&1); then
-  print -P "\033[2K\r%F{green}✓%f Installed Zim in ${ZIM_HOME}"
+  print -P "\033[2K\r%F{green}✓%f Installed Zim in ${zim_home_str}"
 else
-  print -P "\033[2K\r%F{red}✗ Error installing Zim in ${ZIM_HOME}%f\n${err}" >&2
+  print -P "\033[2K\r%F{red}✗ Error installing Zim in ${zim_home_str}%f\n${err}" >&2
   return 1
 fi
 
 # Prepend templates
-local template_file user_file
+local template_file user_file user_file_str
 for template_file in ${ZIM_HOME}/templates/*; do
   if [[ ${zim_home_str} != ${home_str}/.zim ]]; then
     command sed "s?${home_str}/.zim?${zim_home_str}?g" ${template_file} > ${template_file}.tmp
@@ -86,24 +91,26 @@ for template_file in ${ZIM_HOME}/templates/*; do
   user_file=${(e)home_str}/.${template_file:t}
   if [[ -e ${user_file} ]]; then
     user_file=${user_file:A}
+    user_file_str=$(_replace_prefix ${home_str} ${user_file})
     if err=$(command cat ${template_file}.tmp ${user_file} > ${user_file}.tmp && \
         command mv ${user_file}{.tmp,} && command rm ${template_file}.tmp 2>&1); then
-      print -P "%F{green}✓%f Prepended Zim template to ${user_file}"
+      print -P "%F{green}✓%f Prepended Zim template to ${user_file_str}"
     else
-      print -P "%F{red}✗ Error prepending Zim template to ${user_file}%f\n${err}" >&2
+      print -P "%F{red}✗ Error prepending Zim template to ${user_file_str}%f\n${err}" >&2
     fi
   else
+    user_file_str=$(_replace_prefix ${home_str} ${user_file})
     if err=$(command mv ${template_file}.tmp ${user_file} 2>&1); then
-      print -P "%F{green}✓%f Copied Zim template to ${user_file}"
+      print -P "%F{green}✓%f Copied Zim template to ${user_file_str}"
     else
-      print -P "%F{red}✗ Error copying Zim template to ${user_file}%f\n${err}" >&2
+      print -P "%F{red}✗ Error copying Zim template to ${user_file_str}%f\n${err}" >&2
     fi
   fi
 done
 
+print -n "Installing modules …"
 # Will complain that modules are not installed at first, so silence that.
 source ${ZIM_HOME}/init.zsh &>/dev/null
-print -n "Installing modules …"
 if err=$(zimfw install -q 2>&1); then
   print -P "\033[2K\r%F{green}✓%f Installed modules."
 else
@@ -114,5 +121,8 @@ print -n "Compiling Zsh scripts …"
 if err=$(zimfw compile -q 2>&1); then
   print -P "\033[2K\r%F{green}✓%f Compiled Zsh scripts."
 else
-  print -P "\033[2K\r${err}\n%F{red}✗ Could not compile Zsh scripts.%f" >&2
+  print -P "\033[2K\r%F{red}✗ Error compiling Zsh scripts.%f\n${err}" >&2
 fi
+} always {
+  unfunction _replace_prefix
+}
