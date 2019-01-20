@@ -85,6 +85,7 @@ for template_file in ${ZIM_HOME}/templates/*; do
   fi
   user_file=${(e)home_str}/.${template_file:t}
   if [[ -e ${user_file} ]]; then
+    user_file=${user_file:A}
     if err=$(command cat ${template_file}.tmp ${user_file} > ${user_file}.tmp && \
         command mv ${user_file}{.tmp,} && command rm ${template_file}.tmp 2>&1); then
       print -P "%F{green}✓%f Prepended Zim template to ${user_file}"
