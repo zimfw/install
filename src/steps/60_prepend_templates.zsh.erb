@@ -1,0 +1,22 @@
+# Prepend templates
+<%= render_templates("src/templates/*.erb") %>
+for ZTEMPLATE in ${(k)ZTEMPLATES}; do
+  USER_FILE=<%= home %>/.${ZTEMPLATE}
+  if [[ -e ${USER_FILE} ]]; then
+    USER_FILE=${USER_FILE:A}
+    USER_FILE_STR=$(_replace_home ${USER_FILE})
+    if ERR=$(print ${ZTEMPLATES[${ZTEMPLATE}]} | cat - ${USER_FILE} > ${USER_FILE}.tmp && \
+        command mv ${USER_FILE}{.tmp,} 2>&1); then
+      print -P "%F{green}✓%f Prepended Zim template to ${USER_FILE_STR}"
+    else
+      print -u2 -P "%F{red}✗ Error prepending Zim template to ${USER_FILE_STR}%f\n${ERR}"
+    fi
+  else
+    USER_FILE_STR=$(_replace_home ${USER_FILE})
+    if ERR=$(print ${ZTEMPLATES[${ZTEMPLATE}]} > ${USER_FILE}); then
+      print -P "%F{green}✓%f Copied Zim template to ${USER_FILE_STR}"
+    else
+      print -u2 -P "%F{red}✗ Error copying Zim template to ${USER_FILE_STR}%f\n${ERR}"
+    fi
+  fi
+done

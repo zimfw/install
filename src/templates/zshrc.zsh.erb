@@ -1,0 +1,9 @@
+#
+# User configuration sourced by interactive shells
+#
+
+# Define Zim location
+ZIM_HOME=<%= home %>/.zim
+
+# Start Zim
+[[ -s ${ZIM_HOME}/<%= script_filename %> ]] && source ${ZIM_HOME}/<%= script_filename %>

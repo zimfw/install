@@ -1,0 +1,18 @@
+# Check ZIM_HOME
+if (( ! ${+ZIM_HOME} )); then
+  print -P '%F{green}✓%f ZIM_HOME not set, using the default one.'
+  ZIM_HOME=${(e)ZIM_HOME_STR}
+elif [[ ${ZIM_HOME} == ${(e)ZIM_HOME_STR} ]]; then
+  print -P '%F{green}✓%f Your ZIM_HOME is the default one.'
+else
+  ZIM_HOME_STR=$(_replace_home ${ZIM_HOME})
+  print -P "%F{green}✓%f Your ZIM_HOME is customized to ${ZIM_HOME_STR}"
+fi
+if [[ -e ${ZIM_HOME} ]]; then
+  if (( $(command find ${ZIM_HOME} -type d -maxdepth 0 -empty | wc -l) )); then
+    print -P "%F{green}✓%f ZIM_HOME already exists, but is empty."
+  else
+    print -u2 -P "%F{red}✗ ${ZIM_HOME} already exists. Please set ZIM_HOME to the path where you want to install Zim."
+    return 1
+  fi
+fi

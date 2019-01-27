@@ -1,0 +1,20 @@
+if [[ -z ${ZSH_VERSION} ]]; then
+  print -u2 -P '%F{red}✗ You must use zsh to run install.zsh'
+  return 1
+fi
+
+emulate -L zsh
+
+_replace_home() {
+  local abs_path=${1:A}
+  local suffix=${abs_path#${<%= home %>:A}}
+  if [[ ${abs_path} != ${suffix} ]]; then
+    print '<%= home %>'${suffix}
+  else
+    print ${1}
+  fi
+}
+
+typeset -A ZTEMPLATES
+CLEAR_LINE="\033[2K\r"
+ZIM_HOME_STR='<%= home %>/.zim'

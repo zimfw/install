@@ -1,0 +1,33 @@
+<%# coding: UTF-8 %><%
+class Zim
+  attr_reader :home, :min_zsh_version, :script_filename
+
+  def initialize
+    @home = "${ZDOTDIR:-${HOME}}"
+    @min_zsh_version = "5.2"
+    @script_filename = "zimfw.zsh"
+  end
+
+  def render(filename)
+    ERB.new(File.read(filename)).result(binding)
+  end
+
+  def render_all(pattern)
+    Dir[pattern].sort.map { |filename| render(filename) }.join("\n")
+  end
+
+  def render_template(filename)
+    render(filename).gsub(/(\$[^']|")/, "\\\\\\1").gsub("\\${ZDOTDIR:-\\${HOME}}/.zim", "${ZIM_HOME_STR}")
+  end
+
+  def render_templates(pattern)
+    Dir[pattern].sort.map { |filename|
+      "ZTEMPLATES[#{File.basename(filename, '.zsh.erb')}]=\"#{render_template(filename)}\""
+    }.join("\n")
+  end
+end
+zim = Zim.new
+%># AUTOMATICALLY GENERATED FILE. EDIT ONLY THE SOURCE FILES AND THEN COMPILE.
+# DO NOT DIRECTLY EDIT THIS FILE!
+
+<%= zim.render_all("src/steps/*.erb") %>

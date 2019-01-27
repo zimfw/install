@@ -1,0 +1,6 @@
+print -n "Compiling Zsh scripts …"
+if ERR=$(zimfw compile -q 2>&1); then
+  print -P "${CLEAR_LINE}%F{green}✓%f Compiled Zsh scripts."
+else
+  print -u2 -P "${CLEAR_LINE}%F{red}✗ Error compiling Zsh scripts.%f\n${ERR}"
+fi
