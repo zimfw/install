@@ -114,10 +114,10 @@ ZTEMPLATES[zimrc]="################
 #zstyle ':zim:input' mode 'vi'
 
 # Select what modules you would like enabled. Modules are sourced in the order given.
-zstyle ':zim' modules \
-    directory environment git git-info history input utility \
-    steeef \
-    zsh-completions completion \
+zstyle ':zim' modules \\\\
+    directory environment git git-info history input utility \\\\
+    steeef \\\\
+    zsh-completions completion \\\\
     zsh-autosuggestions zsh-syntax-highlighting history-substring-search
 
 # Modules setup configuration.
@@ -142,12 +142,10 @@ zstyle ':zim:module' zsh-syntax-highlighting 'url' 'zsh-users/zsh-syntax-highlig
 # environment
 #
 
-# Set the string below to the desired terminal title format string.
-# The terminal title is redrawn upon directory change, however, variables like
-# \${PWD} are only evaluated once. Use prompt expansion strings for dynamic data.
+# Set a custom terminal title format. Use prompt expansion strings for dynamic data.
 # See http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
-# For example, '%n@%m: %1~' corresponds to 'username@host: /current/directory'.
-#zstyle ':zim:environment' termtitle '%n@%m: %1~'
+# For example, '%n@%m: %~' corresponds to 'username@host: /current/directory'.
+#zstyle ':zim:environment' termtitle '%n@%m: %~'
 
 #
 # history
