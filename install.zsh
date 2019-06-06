@@ -114,10 +114,10 @@ ZTEMPLATES[zimrc]="################
 #zstyle ':zim:input' mode 'vi'
 
 # Select what modules you would like enabled. Modules are sourced in the order given.
-zstyle ':zim' modules \\\\
-    directory environment git git-info history input utility \\\\
-    steeef \\\\
-    zsh-completions completion \\\\
+zstyle ':zim' modules \\
+    directory environment git git-info history input utility \\
+    steeef \\
+    zsh-completions completion \\
     zsh-autosuggestions zsh-syntax-highlighting history-substring-search
 
 # Modules setup configuration.
@@ -217,7 +217,7 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
   if [[ -e ${USER_FILE} ]]; then
     USER_FILE=${USER_FILE:A}
     USER_FILE_STR=$(_replace_home ${USER_FILE})
-    if ERR=$(print ${ZTEMPLATES[${ZTEMPLATE}]} | cat - ${USER_FILE} > ${USER_FILE}.tmp && \
+    if ERR=$(print -R ${ZTEMPLATES[${ZTEMPLATE}]} | cat - ${USER_FILE} > ${USER_FILE}.tmp && \
         command mv ${USER_FILE}{.tmp,} 2>&1); then
       print -P "%F{green}✓%f Prepended Zim template to ${USER_FILE_STR}"
     else
@@ -225,7 +225,7 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
     fi
   else
     USER_FILE_STR=$(_replace_home ${USER_FILE})
-    if ERR=$(print ${ZTEMPLATES[${ZTEMPLATE}]} > ${USER_FILE}); then
+    if ERR=$(print -R ${ZTEMPLATES[${ZTEMPLATE}]} > ${USER_FILE}); then
       print -P "%F{green}✓%f Copied Zim template to ${USER_FILE_STR}"
     else
       print -u2 -P "%F{red}✗ Error copying Zim template to ${USER_FILE_STR}%f\n${ERR}"
