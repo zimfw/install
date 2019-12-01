@@ -1,5 +1,5 @@
 # Download zimfw script
-if (){
+if () {
   command mkdir -p ${ZIM_HOME} || return 1
   {
     local zscript=${ZIM_HOME}/<%= script_filename %>
@@ -9,15 +9,15 @@ if (){
     elif (( ${+commands[curl]} )); then
       command curl -fsSL -o ${zscript} ${zurl} || return 1
     else
-      print -u2 -P "%F{red}✗ Either %Bwget%b or %Bcurl%b are required to download the Zim script.%f"
+      print -u2 -P '%F{red}✗ Either %Bwget%b or %Bcurl%b are required to download the Zim script.%f'
       return 1
     fi
   } always {
     (( ? )) && command rm -rf ${ZIM_HOME}
   }
 }; then
-  print -P "%F{green}✓%f Downloaded the Zim script to ${ZIM_HOME_STR}"
+  print -PR "%F{green}✓%f Downloaded the Zim script to ${ZIM_HOME}"
 else
-  print -u2 -P "%F{red}✗ Could not download the Zim script to ${ZIM_HOME_STR}%f"
+  print -u2 -PR "%F{red}✗ Could not download the Zim script to ${ZIM_HOME}%f"
   return 1
 fi

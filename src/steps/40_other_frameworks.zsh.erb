@@ -1,5 +1,5 @@
 # Check if other frameworks are enabled
-ZSHRC=<%= home %>/.zshrc
+readonly ZSHRC=<%= home %>/.zshrc
 if [[ -e ${ZSHRC} ]]; then
   if grep -Eq '^[^#]*(source|\.).*prezto/init.zsh' ${ZSHRC}; then
     print -u2 -P '%F{red}✗ You seem to have prezto enabled. Please disable it.%f'

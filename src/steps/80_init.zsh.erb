@@ -1,0 +1,4 @@
+print -n "Initializing Zim …"
+source =( print -R ${ZTEMPLATES[zshrc]} )
+source =( print -R ${ZTEMPLATES[zlogin]} )
+print -P ${CLEAR_LINE}'%F{green}✓%f All done. Enjoy your Zsh IMproved! Restart your terminal for changes to take effect.'

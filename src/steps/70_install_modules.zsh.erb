@@ -1,8 +1,6 @@
 print -n "Installing modules …"
-# Will complain that modules are not installed at first, so silence that.
-source ${ZIM_HOME}/<%= script_filename %> &>/dev/null
-if ERR=$(zimfw install -q 2>&1); then
-  print -P "${CLEAR_LINE}%F{green}✓%f Installed modules."
+if ERR=$(source ${ZIM_HOME}/<%= script_filename %> install -q 2>&1); then
+  print -P ${CLEAR_LINE}'%F{green}✓%f Installed modules.'
 else
-  print -u2 -P "${CLEAR_LINE}${ERR}\n%F{red}✗ Could not install modules.%f"
+  print -u2 -PR ${CLEAR_LINE}${ERR}$'\n''%F{red}✗ Could not install modules.%f'
 fi

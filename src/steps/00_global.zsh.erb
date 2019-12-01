@@ -9,12 +9,12 @@ _replace_home() {
   local abs_path=${1:A}
   local suffix=${abs_path#${<%= home %>:A}}
   if [[ ${abs_path} != ${suffix} ]]; then
-    print '<%= home %>'${suffix}
+    print -R '<%= home %>'${suffix}
   else
-    print ${1}
+    print -R ${1}
   fi
 }
 
 typeset -A ZTEMPLATES
-CLEAR_LINE="\033[2K\r"
+readonly CLEAR_LINE=$'\E[2K\r'
 ZIM_HOME_STR='<%= home %>/.zim'

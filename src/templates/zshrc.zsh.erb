@@ -2,8 +2,181 @@
 # User configuration sourced by interactive shells
 #
 
-# Define Zim location
-ZIM_HOME=<%= home %>/.zim
+# -----------------
+# Zsh configuration
+# -----------------
 
-# Start Zim
-[[ -s ${ZIM_HOME}/<%= script_filename %> ]] && source ${ZIM_HOME}/<%= script_filename %>
+#
+# Changing directories
+#
+
+# Perform cd to a directory if the typed command is invalid, but is a directory.
+setopt AUTO_CD
+
+# Make cd push the old directory to the directory stack.
+setopt AUTO_PUSHD
+
+# Don't push multiple copies of the same directory to the stack.
+setopt PUSHD_IGNORE_DUPS
+
+# Don't print the directory stack after pushd or popd.
+setopt PUSHD_SILENT
+
+# Have pushd without arguments act like `pushd ${HOME}`.
+setopt PUSHD_TO_HOME
+
+#
+# Expansion and globbing
+#
+
+# Treat `#`, `~`, and `^` as patterns for filename globbing.
+setopt EXTENDED_GLOB
+
+#
+# History
+#
+
+# The file to save the history in.
+HISTFILE=<%= home %>/.zhistory
+
+# The maximum number of events stored internally and saved in the history file.
+HISTSIZE=10000
+SAVEHIST=10000
+
+# Don't display duplicates when searching the history.
+setopt HIST_FIND_NO_DUPS
+
+# Don't enter immediate duplicates into the history.
+setopt HIST_IGNORE_DUPS
+
+# Remove older command from the history if a duplicate is to be added.
+setopt HIST_IGNORE_ALL_DUPS
+
+# Remove commands from the history that begin with a space.
+setopt HIST_IGNORE_SPACE
+
+# Don't execute the command directly upon history expansion.
+setopt HIST_VERIFY
+
+# Cause all terminals to share the same history 'session'.
+setopt SHARE_HISTORY
+
+#
+# Input/output
+#
+
+# Set editor default keymap to emacs (`-e`) or vi (`-v`)
+bindkey -e
+
+# Prompt for spelling correction of commands.
+#setopt CORRECT
+
+# Customize spelling correction prompt.
+#SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
+
+# Allow comments starting with `#` in the interactive shell.
+setopt INTERACTIVE_COMMENTS
+
+# Disallow `>` to overwrite existing files. Use `>|` or `>!` instead.
+setopt NO_CLOBBER
+
+# Remove path separator from WORDCHARS.
+WORDCHARS=${WORDCHARS//[\/]}
+
+#
+# Job control
+#
+
+# Resume an existing job before creating a new one.
+setopt AUTO_RESUME
+
+# List jobs in verbose format by default.
+setopt LONG_LIST_JOBS
+
+# Prevent background jobs being given a lower priority.
+setopt NO_BG_NICE
+
+# Prevent status report of jobs on shell exit.
+setopt NO_CHECK_JOBS
+
+# Prevent SIGHUP to jobs on shell exit.
+setopt NO_HUP
+
+# --------------------
+# Module configuration
+# --------------------
+
+#
+# completion
+#
+
+# Set a custom path for the completion dump file.
+# If none is provided, the default <%= home %>/.zcompdump is used.
+#zstyle ':zim:completion' dumpfile "<%= home %>/.zcompdump-${ZSH_VERSION}"
+
+#
+# environment
+#
+
+# Set a custom terminal title format. Use prompt expansion strings for dynamic data.
+# See http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
+# For example, '%n@%m: %~' corresponds to 'username@host: /current/directory'.
+zstyle ':zim:termtitle' format '%n@%m: %~'
+
+#
+# input
+#
+
+# Append `../` to your input for each `.` you type after an initial `..`
+#zstyle ':zim:input' double-dot-expand yes
+
+#
+# zsh-autosuggestions
+#
+
+# Customize the style that the suggestions are shown with.
+# See https://github.com/zsh-users/zsh-autosuggestions/blob/master/README.md#suggestion-highlight-style
+#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
+
+#
+# zsh-syntax-highlighting
+#
+
+# Set what highlighters will be used.
+# See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+
+# Customize the main highlighter styles.
+# See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters/main.md#how-to-tweak-it
+#typeset -A ZSH_HIGHLIGHT_STYLES
+#ZSH_HIGHLIGHT_STYLES[comment]='fg=10'
+
+# ------------
+# Load modules
+# ------------
+
+source <%= home %>/.zim/init.zsh
+
+# ------------------------------
+# Post-load module configuration
+# ------------------------------
+
+#
+# zsh-history-substring-search
+#
+
+# Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# Bind up and down keys
+zmodload -F zsh/terminfo +p:terminfo
+if [[ -n ${terminfo[kcuu1]} && -n ${terminfo[kcud1]} ]]; then
+  bindkey ${terminfo[kcuu1]} history-substring-search-up
+  bindkey ${terminfo[kcud1]} history-substring-search-down
+fi
+
+bindkey '^P' history-substring-search-up
+bindkey '^N' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down

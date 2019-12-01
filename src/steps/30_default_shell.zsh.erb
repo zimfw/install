@@ -2,11 +2,10 @@
 if [[ ${SHELL:t} == zsh ]]; then
   print -P '%F{green}✓%f Zsh is your default shell.'
 else
-  ZPATH==zsh
-  command chsh -s ${ZPATH}
-  if (( ? )); then
-    print -u2 -P "%F{red}✗ Could not change your default shell to ${ZPATH}. Please manually change it later."
+  readonly ZPATH==zsh
+  if command chsh -s ${ZPATH}; then
+    print -PR "%F{green}✓%f Changed your default shell to ${ZPATH}"
   else
-    print -P "%F{green}✓%f Changed your default shell to ${ZPATH}"
+    print -u2 -PR "%F{red}✗ Could not change your default shell to ${ZPATH}. Please manually change it later."
   fi
 fi

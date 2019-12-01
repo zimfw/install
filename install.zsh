@@ -12,22 +12,22 @@ _replace_home() {
   local abs_path=${1:A}
   local suffix=${abs_path#${${ZDOTDIR:-${HOME}}:A}}
   if [[ ${abs_path} != ${suffix} ]]; then
-    print '${ZDOTDIR:-${HOME}}'${suffix}
+    print -R '${ZDOTDIR:-${HOME}}'${suffix}
   else
-    print ${1}
+    print -R ${1}
   fi
 }
 
 typeset -A ZTEMPLATES
-CLEAR_LINE="\033[2K\r"
+readonly CLEAR_LINE=$'\E[2K\r'
 ZIM_HOME_STR='${ZDOTDIR:-${HOME}}/.zim'
 
 # Check Zsh version
 autoload -Uz is-at-least && if ! is-at-least 5.2; then
-  print -u2 -P "%F{red}✗ You're using Zsh version ${ZSH_VERSION} and versions < 5.2 are not supported. Please update your Zsh.%f"
+  print -u2 -PR "%F{red}✗ You're using Zsh version ${ZSH_VERSION} and versions < 5.2 are not supported. Please update your Zsh.%f"
   return 1
 fi
-print -P "%F{green}✓%f Using Zsh version ${ZSH_VERSION}"
+print -PR "%F{green}✓%f Using Zsh version ${ZSH_VERSION}"
 
 # Check ZIM_HOME
 if (( ! ${+ZIM_HOME} )); then
@@ -37,13 +37,13 @@ elif [[ ${ZIM_HOME} == ${(e)ZIM_HOME_STR} ]]; then
   print -P '%F{green}✓%f Your ZIM_HOME is the default one.'
 else
   ZIM_HOME_STR=$(_replace_home ${ZIM_HOME})
-  print -P "%F{green}✓%f Your ZIM_HOME is customized to ${ZIM_HOME_STR}"
+  print -PR "%F{green}✓%f Your ZIM_HOME is customized to ${ZIM_HOME_STR}"
 fi
 if [[ -e ${ZIM_HOME} ]]; then
   if (( $(command find ${ZIM_HOME} -type d -maxdepth 0 -empty | wc -l) )); then
-    print -P "%F{green}✓%f ZIM_HOME already exists, but is empty."
+    print -P '%F{green}✓%f ZIM_HOME already exists, but is empty.'
   else
-    print -u2 -P "%F{red}✗ ${ZIM_HOME} already exists. Please set ZIM_HOME to the path where you want to install Zim."
+    print -u2 -PR "%F{red}✗ ${ZIM_HOME} already exists. Please set ZIM_HOME to the path where you want to install Zim."
     return 1
   fi
 fi
@@ -52,17 +52,16 @@ fi
 if [[ ${SHELL:t} == zsh ]]; then
   print -P '%F{green}✓%f Zsh is your default shell.'
 else
-  ZPATH==zsh
-  command chsh -s ${ZPATH}
-  if (( ? )); then
-    print -u2 -P "%F{red}✗ Could not change your default shell to ${ZPATH}. Please manually change it later."
+  readonly ZPATH==zsh
+  if command chsh -s ${ZPATH}; then
+    print -PR "%F{green}✓%f Changed your default shell to ${ZPATH}"
   else
-    print -P "%F{green}✓%f Changed your default shell to ${ZPATH}"
+    print -u2 -PR "%F{red}✗ Could not change your default shell to ${ZPATH}. Please manually change it later."
   fi
 fi
 
 # Check if other frameworks are enabled
-ZSHRC=${ZDOTDIR:-${HOME}}/.zshrc
+readonly ZSHRC=${ZDOTDIR:-${HOME}}/.zshrc
 if [[ -e ${ZSHRC} ]]; then
   if grep -Eq '^[^#]*(source|\.).*prezto/init.zsh' ${ZSHRC}; then
     print -u2 -P '%F{red}✗ You seem to have prezto enabled. Please disable it.%f'
@@ -82,7 +81,7 @@ if [[ -e ${ZSHRC} ]]; then
 fi
 
 # Download zimfw script
-if (){
+if () {
   command mkdir -p ${ZIM_HOME} || return 1
   {
     local zscript=${ZIM_HOME}/zimfw.zsh
@@ -92,43 +91,157 @@ if (){
     elif (( ${+commands[curl]} )); then
       command curl -fsSL -o ${zscript} ${zurl} || return 1
     else
-      print -u2 -P "%F{red}✗ Either %Bwget%b or %Bcurl%b are required to download the Zim script.%f"
+      print -u2 -P '%F{red}✗ Either %Bwget%b or %Bcurl%b are required to download the Zim script.%f'
       return 1
     fi
   } always {
     (( ? )) && command rm -rf ${ZIM_HOME}
   }
 }; then
-  print -P "%F{green}✓%f Downloaded the Zim script to ${ZIM_HOME_STR}"
+  print -PR "%F{green}✓%f Downloaded the Zim script to ${ZIM_HOME}"
 else
-  print -u2 -P "%F{red}✗ Could not download the Zim script to ${ZIM_HOME_STR}%f"
+  print -u2 -PR "%F{red}✗ Could not download the Zim script to ${ZIM_HOME}%f"
   return 1
 fi
 
 # Prepend templates
-ZTEMPLATES[zimrc]="################
-# ZIM SETTINGS #
-################
+ZTEMPLATES[zimrc]="#
+# Modules
+#
 
-# Set input mode to 'emacs' (default) or 'vi'.
-#zstyle ':zim:input' mode 'vi'
+zmodule environment
+zmodule git
+zmodule input
+zmodule termtitle
+zmodule utility
 
-# Select what modules you would like enabled. Modules are sourced in the order given.
-zstyle ':zim' modules \\
-    directory environment git git-info history input utility \\
-    steeef \\
-    zsh-completions completion \\
-    zsh-autosuggestions zsh-syntax-highlighting history-substring-search
+# Prompt
+zmodule git-info
+zmodule steeef
 
-# Modules setup configuration.
-# See https://github.com/zimfw/zimfw/blob/develop/README.md#module-customization
-zstyle ':zim:module' zsh-completions 'url' 'zsh-users/zsh-completions'
-zstyle ':zim:module' zsh-autosuggestions 'url' 'zsh-users/zsh-autosuggestions'
-zstyle ':zim:module' zsh-syntax-highlighting 'url' 'zsh-users/zsh-syntax-highlighting'
+zmodule zsh-users/zsh-completions
+# completion must be sourced after zsh-users/zsh-completions
+zmodule completion
+zmodule zsh-users/zsh-autosuggestions
+# zsh-users/zsh-syntax-highlighting must be sourced after completion
+zmodule zsh-users/zsh-syntax-highlighting
+# zsh-users/zsh-history-substring-search must be sourced after zsh-users/zsh-syntax-highlighting
+zmodule zsh-users/zsh-history-substring-search
+"
+ZTEMPLATES[zlogin]="#
+# User configuration sourced by login shells
+#
 
-###################
-# MODULE SETTINGS #
-###################
+# Initialize Zim
+zimfw login-init -q &!
+"
+ZTEMPLATES[zshrc]="#
+# User configuration sourced by interactive shells
+#
+
+# -----------------
+# Zsh configuration
+# -----------------
+
+#
+# Changing directories
+#
+
+# Perform cd to a directory if the typed command is invalid, but is a directory.
+setopt AUTO_CD
+
+# Make cd push the old directory to the directory stack.
+setopt AUTO_PUSHD
+
+# Don't push multiple copies of the same directory to the stack.
+setopt PUSHD_IGNORE_DUPS
+
+# Don't print the directory stack after pushd or popd.
+setopt PUSHD_SILENT
+
+# Have pushd without arguments act like \`pushd \${HOME}\`.
+setopt PUSHD_TO_HOME
+
+#
+# Expansion and globbing
+#
+
+# Treat \`#\`, \`~\`, and \`^\` as patterns for filename globbing.
+setopt EXTENDED_GLOB
+
+#
+# History
+#
+
+# The file to save the history in.
+HISTFILE=\${ZDOTDIR:-\${HOME}}/.zhistory
+
+# The maximum number of events stored internally and saved in the history file.
+HISTSIZE=10000
+SAVEHIST=10000
+
+# Don't display duplicates when searching the history.
+setopt HIST_FIND_NO_DUPS
+
+# Don't enter immediate duplicates into the history.
+setopt HIST_IGNORE_DUPS
+
+# Remove older command from the history if a duplicate is to be added.
+setopt HIST_IGNORE_ALL_DUPS
+
+# Remove commands from the history that begin with a space.
+setopt HIST_IGNORE_SPACE
+
+# Don't execute the command directly upon history expansion.
+setopt HIST_VERIFY
+
+# Cause all terminals to share the same history 'session'.
+setopt SHARE_HISTORY
+
+#
+# Input/output
+#
+
+# Set editor default keymap to emacs (\`-e\`) or vi (\`-v\`)
+bindkey -e
+
+# Prompt for spelling correction of commands.
+#setopt CORRECT
+
+# Customize spelling correction prompt.
+#SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
+
+# Allow comments starting with \`#\` in the interactive shell.
+setopt INTERACTIVE_COMMENTS
+
+# Disallow \`>\` to overwrite existing files. Use \`>|\` or \`>!\` instead.
+setopt NO_CLOBBER
+
+# Remove path separator from WORDCHARS.
+WORDCHARS=\${WORDCHARS//[\\/]}
+
+#
+# Job control
+#
+
+# Resume an existing job before creating a new one.
+setopt AUTO_RESUME
+
+# List jobs in verbose format by default.
+setopt LONG_LIST_JOBS
+
+# Prevent background jobs being given a lower priority.
+setopt NO_BG_NICE
+
+# Prevent status report of jobs on shell exit.
+setopt NO_CHECK_JOBS
+
+# Prevent SIGHUP to jobs on shell exit.
+setopt NO_HUP
+
+# --------------------
+# Module configuration
+# --------------------
 
 #
 # completion
@@ -145,34 +258,14 @@ zstyle ':zim:module' zsh-syntax-highlighting 'url' 'zsh-users/zsh-syntax-highlig
 # Set a custom terminal title format. Use prompt expansion strings for dynamic data.
 # See http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
 # For example, '%n@%m: %~' corresponds to 'username@host: /current/directory'.
-#zstyle ':zim:environment' termtitle '%n@%m: %~'
-
-#
-# history
-#
-
-# Save the history in a custom file path.
-# If none is provided, the default \${ZDOTDIR:-\${HOME}}/.zhistory is used.
-#HISTFILE=\${ZDOTDIR:-\${HOME}}/.zsh_history
+zstyle ':zim:termtitle' format '%n@%m: %~'
 
 #
 # input
 #
 
-# Enable double-dot expansion.
-# This appends '../' to your input for each '.' you type after an initial '..'
+# Append \`../\` to your input for each \`.\` you type after an initial \`..\`
 #zstyle ':zim:input' double-dot-expand yes
-
-#
-# utility
-#
-
-# Enable spelling correction prompts.
-# See http://zsh.sourceforge.net/Doc/Release/Options.html#index-CORRECT
-#setopt CORRECT
-
-# Set a custom spelling correction prompt.
-#SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
 
 #
 # zsh-autosuggestions
@@ -194,58 +287,67 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 # See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters/main.md#how-to-tweak-it
 #typeset -A ZSH_HIGHLIGHT_STYLES
 #ZSH_HIGHLIGHT_STYLES[comment]='fg=10'
-"
-ZTEMPLATES[zlogin]="#
-# User configuration sourced by login shells
+
+# ------------
+# Load modules
+# ------------
+
+source ${ZIM_HOME_STR}/init.zsh
+
+# ------------------------------
+# Post-load module configuration
+# ------------------------------
+
+#
+# zsh-history-substring-search
 #
 
-# Initialize Zim
-zimfw login-init -q &!
-"
-ZTEMPLATES[zshrc]="#
-# User configuration sourced by interactive shells
-#
+# Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
 
-# Define Zim location
-ZIM_HOME=${ZIM_HOME_STR}
+# Bind up and down keys
+zmodload -F zsh/terminfo +p:terminfo
+if [[ -n \${terminfo[kcuu1]} && -n \${terminfo[kcud1]} ]]; then
+  bindkey \${terminfo[kcuu1]} history-substring-search-up
+  bindkey \${terminfo[kcud1]} history-substring-search-down
+fi
 
-# Start Zim
-[[ -s \${ZIM_HOME}/zimfw.zsh ]] && source \${ZIM_HOME}/zimfw.zsh
+bindkey '^P' history-substring-search-up
+bindkey '^N' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
 "
 for ZTEMPLATE in ${(k)ZTEMPLATES}; do
   USER_FILE=${ZDOTDIR:-${HOME}}/.${ZTEMPLATE}
   if [[ -e ${USER_FILE} ]]; then
     USER_FILE=${USER_FILE:A}
-    USER_FILE_STR=$(_replace_home ${USER_FILE})
-    if ERR=$(print -R ${ZTEMPLATES[${ZTEMPLATE}]} | cat - ${USER_FILE} > ${USER_FILE}.tmp && \
-        command mv ${USER_FILE}{.tmp,} 2>&1); then
-      print -P "%F{green}✓%f Prepended Zim template to ${USER_FILE_STR}"
+    if ERR=$(command mv =(
+      print -R ${ZTEMPLATES[${ZTEMPLATE}]}
+      cat ${USER_FILE}
+    ) ${USER_FILE} 2>&1); then
+      print -PR "%F{green}✓%f Prepended Zim template to ${USER_FILE}"
     else
-      print -u2 -P "%F{red}✗ Error prepending Zim template to ${USER_FILE_STR}%f\n${ERR}"
+      print -u2 -PR "%F{red}✗ Error prepending Zim template to ${USER_FILE}%f"$'\n'${ERR}
     fi
   else
-    USER_FILE_STR=$(_replace_home ${USER_FILE})
     if ERR=$(print -R ${ZTEMPLATES[${ZTEMPLATE}]} > ${USER_FILE}); then
-      print -P "%F{green}✓%f Copied Zim template to ${USER_FILE_STR}"
+      print -PR "%F{green}✓%f Copied Zim template to ${USER_FILE}"
     else
-      print -u2 -P "%F{red}✗ Error copying Zim template to ${USER_FILE_STR}%f\n${ERR}"
+      print -u2 -PR "%F{red}✗ Error copying Zim template to ${USER_FILE}%f"$'\n'${ERR}
     fi
   fi
 done
 
 print -n "Installing modules …"
-# Will complain that modules are not installed at first, so silence that.
-source ${ZIM_HOME}/zimfw.zsh &>/dev/null
-if ERR=$(zimfw install -q 2>&1); then
-  print -P "${CLEAR_LINE}%F{green}✓%f Installed modules."
+if ERR=$(source ${ZIM_HOME}/zimfw.zsh install -q 2>&1); then
+  print -P ${CLEAR_LINE}'%F{green}✓%f Installed modules.'
 else
-  print -u2 -P "${CLEAR_LINE}${ERR}\n%F{red}✗ Could not install modules.%f"
+  print -u2 -PR ${CLEAR_LINE}${ERR}$'\n''%F{red}✗ Could not install modules.%f'
 fi
 
-print -n "Compiling Zsh scripts …"
-if ERR=$(zimfw compile -q 2>&1); then
-  print -P "${CLEAR_LINE}%F{green}✓%f Compiled Zsh scripts."
-else
-  print -u2 -P "${CLEAR_LINE}%F{red}✗ Error compiling Zsh scripts.%f\n${ERR}"
-fi
+print -n "Initializing Zim …"
+source =( print -R ${ZTEMPLATES[zshrc]} )
+source =( print -R ${ZTEMPLATES[zlogin]} )
+print -P ${CLEAR_LINE}'%F{green}✓%f All done. Enjoy your Zsh IMproved! Restart your terminal for changes to take effect.'
 
