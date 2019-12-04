@@ -39,8 +39,8 @@ WORDCHARS=${WORDCHARS//[\/]}
 #
 
 # Set a custom path for the completion dump file.
-# If none is provided, the default <%= home %>/.zcompdump is used.
-#zstyle ':zim:completion' dumpfile "<%= home %>/.zcompdump-${ZSH_VERSION}"
+# If none is provided, the default ${ZDOTDIR:-${HOME}}/.zcompdump is used.
+#zstyle ':zim:completion' dumpfile "${ZDOTDIR:-${HOME}}/.zcompdump-${ZSH_VERSION}"
 
 #
 # environment
@@ -83,7 +83,7 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 # Load modules
 # ------------
 
-source <%= home %>/.zim/init.zsh
+source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
 
 # ------------------------------
 # Post-load module configuration

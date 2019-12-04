@@ -1,5 +1,5 @@
 # Prepend templates
-<%= render_templates("src/templates/*.erb") %>
+<%= render_templates("src/templates/*") %>
 for ZTEMPLATE in ${(k)ZTEMPLATES}; do
   USER_FILE=<%= home %>/.${ZTEMPLATE}
   if [[ -e ${USER_FILE} ]]; then

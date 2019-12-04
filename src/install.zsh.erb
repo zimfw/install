@@ -25,7 +25,7 @@ class Zim
 
   def render_templates(pattern)
     Dir[pattern].sort.map { |filename|
-      "ZTEMPLATES[#{File.basename(filename, '.zsh.erb')}]=\"#{render_template(filename)}\""
+      "ZTEMPLATES[#{File.basename(filename)}]=\"#{render_template(filename)}\""
     }.join("\n")
   end
 end
