@@ -79,14 +79,18 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 #typeset -A ZSH_HIGHLIGHT_STYLES
 #ZSH_HIGHLIGHT_STYLES[comment]='fg=10'
 
-# ------------
-# Load modules
-# ------------
+# ------------------
+# Initialize modules
+# ------------------
 
+if [[ ${ZDOTDIR:-${HOME}}/.zim/init.zsh -ot ${ZDOTDIR:-${HOME}}/.zimrc ]]; then
+  # Update static initialization script if it's outdated, before sourcing it
+  source ${ZDOTDIR:-${HOME}}/.zim/zimfw.zsh init -q
+fi
 source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
 
 # ------------------------------
-# Post-load module configuration
+# Post-init module configuration
 # ------------------------------
 
 #
