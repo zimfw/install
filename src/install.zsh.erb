@@ -18,9 +18,9 @@ class Zim
 
   def render_template(filename)
     render(filename)
-      .gsub("\\", "\\\\\\\\")
+      .gsub(/\\/, "\\\\\\\\")
       .gsub(/(\$[^']|"|`)/, "\\\\\\1")
-      .gsub("\\${ZDOTDIR:-\\${HOME}}/.zim/", "${ZIM_HOME_STR}/")
+      .gsub(/\\\${ZDOTDIR:-\\\${HOME}}\/\.zim\b/, "${ZIM_HOME_STR}")
   end
 
   def render_templates(pattern)
