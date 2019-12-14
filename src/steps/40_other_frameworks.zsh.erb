@@ -2,18 +2,18 @@
 readonly ZSHRC=<%= home %>/.zshrc
 if [[ -e ${ZSHRC} ]]; then
   if grep -Eq '^[^#]*(source|\.).*prezto/init.zsh' ${ZSHRC}; then
-    print -u2 -P '%F{red}✗ You seem to have prezto enabled. Please disable it.%f'
+    print -u2 -P '%F{red}<%= error %>You seem to have prezto enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*(source|\.).*/oh-my-zsh.sh' ${ZSHRC}; then
-    print -u2 -P '%F{red}✗ You seem to have oh-my-zsh enabled. Please disable it.%f'
+    print -u2 -P '%F{red}<%= error %>You seem to have oh-my-zsh enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*antibody bundle' ${ZSHRC}; then
-    print -u2 -P '%F{red}✗ You seem to have antibody enabled. Please disable it.%f'
+    print -u2 -P '%F{red}<%= error %>You seem to have antibody enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*antigen apply' ${ZSHRC}; then
-    print -u2 -P '%F{red}✗ You seem to have antigen enabled. Please disable it.%f'
+    print -u2 -P '%F{red}<%= error %>You seem to have antigen enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*(source|\.).*/zgen.zsh' ${ZSHRC}; then
-    print -u2 -P '%F{red}✗ You seem to have zgen enabled. Please disable it.%f'
+    print -u2 -P '%F{red}<%= error %>You seem to have zgen enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*zplug load' ${ZSHRC}; then
-    print -u2 -P '%F{red}✗ You seem to have zplug enabled. Please disable it.%f'
+    print -u2 -P '%F{red}<%= error %>You seem to have zplug enabled. Please disable it.%f'
   else
-    print -P '%F{green}✓%f No other Zsh frameworks detected.'
+    print -P '<%= okay %>No other Zsh frameworks detected.'
   fi
 fi

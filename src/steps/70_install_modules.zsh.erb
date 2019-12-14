@@ -1,6 +1,6 @@
-print -n "Installing modules …"
+print -n "Installing modules<%= ellipsis %>"
 if ERR=$(source ${ZIM_HOME}/<%= script_filename %> install -q 2>&1); then
-  print -P ${CLEAR_LINE}'%F{green}✓%f Installed modules.'
+  print -P ${CLEAR_LINE}'<%= okay %>Installed modules.'
 else
-  print -u2 -PR ${CLEAR_LINE}${ERR}$'\n''%F{red}✗ Could not install modules.%f'
+  print -u2 -PR ${CLEAR_LINE}${ERR}$'\n''%F{red}<%= error %>Could not install modules.%f'
 fi

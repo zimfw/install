@@ -1,4 +1,4 @@
-print -n "Initializing Zim …"
+print -n "Initializing Zim<%= ellipsis %>"
 source =( print -R ${ZTEMPLATES[zshrc]} )
 source =( print -R ${ZTEMPLATES[zlogin]} )
-print -P ${CLEAR_LINE}'%F{green}✓%f All done. Enjoy your Zsh IMproved! Restart your terminal for changes to take effect.'
+print -P ${CLEAR_LINE}'<%= done %>All done. Enjoy your Zsh IMproved! Restart your terminal for changes to take effect.'

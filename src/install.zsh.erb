@@ -1,11 +1,16 @@
 <%# coding: UTF-8 %><%
 class Zim
-  attr_reader :home, :min_zsh_version, :script_filename
+  attr_reader :home, :min_zsh_version, :script_filename, :ellipsis, :okay, :error, :done, :failed
 
   def initialize
     @home = "${ZDOTDIR:-${HOME}}"
     @min_zsh_version = "5.2"
     @script_filename = "zimfw.zsh"
+    @ellipsis = " ..."
+    @okay = "%F{green})%f "
+    @error = "x "
+    @done = ""
+    @failed = ""
   end
 
   def render(filename)

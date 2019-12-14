@@ -1,5 +1,5 @@
 if [[ -z ${ZSH_VERSION} ]]; then
-  print -u2 -P '%F{red}✗ You must use zsh to run install.zsh'
+  print -u2 -P '%F{red}<%= error %>You must use zsh to run install.zsh'
   return 1
 fi
 

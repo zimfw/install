@@ -1,6 +1,6 @@
 # Check Zsh version
 autoload -Uz is-at-least && if ! is-at-least <%= min_zsh_version %>; then
-  print -u2 -PR "%F{red}✗ You're using Zsh version ${ZSH_VERSION} and versions < <%= min_zsh_version %> are not supported. Please update your Zsh.%f"
+  print -u2 -PR "%F{red}<%= error %>You're using Zsh version ${ZSH_VERSION} and versions < <%= min_zsh_version %> are not supported. Please update your Zsh.%f"
   return 1
 fi
-print -PR "%F{green}✓%f Using Zsh version ${ZSH_VERSION}"
+print -PR "<%= okay %>Using Zsh version ${ZSH_VERSION}"

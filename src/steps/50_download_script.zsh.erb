@@ -1,23 +1,20 @@
 # Download zimfw script
-if () {
+if (
   command mkdir -p ${ZIM_HOME} || return 1
-  {
-    local zscript=${ZIM_HOME}/<%= script_filename %>
-    local zurl=https://raw.githubusercontent.com/zimfw/zimfw/develop/<%= script_filename %>
-    if (( ${+commands[wget]} )); then
-      command wget -nv ${1} -O ${zscript} ${zurl} || return 1
-    elif (( ${+commands[curl]} )); then
-      command curl -fsSL -o ${zscript} ${zurl} || return 1
-    else
-      print -u2 -P '%F{red}✗ Either %Bwget%b or %Bcurl%b are required to download the Zim script.%f'
-      return 1
-    fi
-  } always {
-    (( ? )) && command rm -rf ${ZIM_HOME}
-  }
-}; then
-  print -PR "%F{green}✓%f Downloaded the Zim script to ${ZIM_HOME}"
+  local -r zscript=${ZIM_HOME}/<%= script_filename %>
+  local -r zurl=https://raw.githubusercontent.com/zimfw/zimfw/develop/<%= script_filename %>
+  if (( ${+commands[wget]} )); then
+    command wget -nv -O ${zscript} ${zurl} || return 1
+  elif (( ${+commands[curl]} )); then
+    command curl -fsSL -o ${zscript} ${zurl} || return 1
+  else
+    print -u2 -P '%F{red}<%= error %>Either %Bwget%b or %Bcurl%b are required to download the Zim script.%f'
+    return 1
+  fi
+); then
+  print -PR "<%= okay %>Downloaded the Zim script to %B${ZIM_HOME}%b"
 else
-  print -u2 -PR "%F{red}✗ Could not download the Zim script to ${ZIM_HOME}%f"
+  command rm -rf ${ZIM_HOME}
+  print -u2 -PR "%F{red}<%= error %>Could not download the Zim script to %B${ZIM_HOME}%b%f"
   return 1
 fi

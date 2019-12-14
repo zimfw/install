@@ -2,7 +2,7 @@
 # DO NOT DIRECTLY EDIT THIS FILE!
 
 if [[ -z ${ZSH_VERSION} ]]; then
-  print -u2 -P '%F{red}✗ You must use zsh to run install.zsh'
+  print -u2 -P '%F{red}x You must use zsh to run install.zsh'
   return 1
 fi
 
@@ -24,39 +24,39 @@ ZIM_HOME_STR='${ZDOTDIR:-${HOME}}/.zim'
 
 # Check Zsh version
 autoload -Uz is-at-least && if ! is-at-least 5.2; then
-  print -u2 -PR "%F{red}✗ You're using Zsh version ${ZSH_VERSION} and versions < 5.2 are not supported. Please update your Zsh.%f"
+  print -u2 -PR "%F{red}x You're using Zsh version ${ZSH_VERSION} and versions < 5.2 are not supported. Please update your Zsh.%f"
   return 1
 fi
-print -PR "%F{green}✓%f Using Zsh version ${ZSH_VERSION}"
+print -PR "%F{green})%f Using Zsh version ${ZSH_VERSION}"
 
 # Check ZIM_HOME
 if (( ! ${+ZIM_HOME} )); then
-  print -P '%F{green}✓%f ZIM_HOME not set, using the default one.'
+  print -P '%F{green})%f ZIM_HOME not set, using the default one.'
   ZIM_HOME=${(e)ZIM_HOME_STR}
 elif [[ ${ZIM_HOME} == ${(e)ZIM_HOME_STR} ]]; then
-  print -P '%F{green}✓%f Your ZIM_HOME is the default one.'
+  print -P '%F{green})%f Your ZIM_HOME is the default one.'
 else
   ZIM_HOME_STR=$(_replace_home ${ZIM_HOME})
-  print -PR "%F{green}✓%f Your ZIM_HOME is customized to ${ZIM_HOME_STR}"
+  print -PR "%F{green})%f Your ZIM_HOME is customized to %B${ZIM_HOME_STR}%b"
 fi
 if [[ -e ${ZIM_HOME} ]]; then
   if (( $(command find ${ZIM_HOME} -type d -maxdepth 0 -empty | wc -l) )); then
-    print -P '%F{green}✓%f ZIM_HOME already exists, but is empty.'
+    print -P '%F{green})%f ZIM_HOME already exists, but is empty.'
   else
-    print -u2 -PR "%F{red}✗ ${ZIM_HOME} already exists. Please set ZIM_HOME to the path where you want to install Zim."
+    print -u2 -PR "%F{red}x %B${ZIM_HOME}%b already exists. Please set ZIM_HOME to the path where you want to install Zim."
     return 1
   fi
 fi
 
 # Check if Zsh is the default shell
 if [[ ${SHELL:t} == zsh ]]; then
-  print -P '%F{green}✓%f Zsh is your default shell.'
+  print -P '%F{green})%f Zsh is your default shell.'
 else
   readonly ZPATH==zsh
   if command chsh -s ${ZPATH}; then
-    print -PR "%F{green}✓%f Changed your default shell to ${ZPATH}"
+    print -PR "%F{green})%f Changed your default shell to %B${ZPATH}%b"
   else
-    print -u2 -PR "%F{red}✗ Could not change your default shell to ${ZPATH}. Please manually change it later."
+    print -u2 -PR "%F{red}x Could not change your default shell to %B${ZPATH}%b. Please manually change it later."
   fi
 fi
 
@@ -64,43 +64,40 @@ fi
 readonly ZSHRC=${ZDOTDIR:-${HOME}}/.zshrc
 if [[ -e ${ZSHRC} ]]; then
   if grep -Eq '^[^#]*(source|\.).*prezto/init.zsh' ${ZSHRC}; then
-    print -u2 -P '%F{red}✗ You seem to have prezto enabled. Please disable it.%f'
+    print -u2 -P '%F{red}x You seem to have prezto enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*(source|\.).*/oh-my-zsh.sh' ${ZSHRC}; then
-    print -u2 -P '%F{red}✗ You seem to have oh-my-zsh enabled. Please disable it.%f'
+    print -u2 -P '%F{red}x You seem to have oh-my-zsh enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*antibody bundle' ${ZSHRC}; then
-    print -u2 -P '%F{red}✗ You seem to have antibody enabled. Please disable it.%f'
+    print -u2 -P '%F{red}x You seem to have antibody enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*antigen apply' ${ZSHRC}; then
-    print -u2 -P '%F{red}✗ You seem to have antigen enabled. Please disable it.%f'
+    print -u2 -P '%F{red}x You seem to have antigen enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*(source|\.).*/zgen.zsh' ${ZSHRC}; then
-    print -u2 -P '%F{red}✗ You seem to have zgen enabled. Please disable it.%f'
+    print -u2 -P '%F{red}x You seem to have zgen enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*zplug load' ${ZSHRC}; then
-    print -u2 -P '%F{red}✗ You seem to have zplug enabled. Please disable it.%f'
+    print -u2 -P '%F{red}x You seem to have zplug enabled. Please disable it.%f'
   else
-    print -P '%F{green}✓%f No other Zsh frameworks detected.'
+    print -P '%F{green})%f No other Zsh frameworks detected.'
   fi
 fi
 
 # Download zimfw script
-if () {
+if (
   command mkdir -p ${ZIM_HOME} || return 1
-  {
-    local zscript=${ZIM_HOME}/zimfw.zsh
-    local zurl=https://raw.githubusercontent.com/zimfw/zimfw/develop/zimfw.zsh
-    if (( ${+commands[wget]} )); then
-      command wget -nv ${1} -O ${zscript} ${zurl} || return 1
-    elif (( ${+commands[curl]} )); then
-      command curl -fsSL -o ${zscript} ${zurl} || return 1
-    else
-      print -u2 -P '%F{red}✗ Either %Bwget%b or %Bcurl%b are required to download the Zim script.%f'
-      return 1
-    fi
-  } always {
-    (( ? )) && command rm -rf ${ZIM_HOME}
-  }
-}; then
-  print -PR "%F{green}✓%f Downloaded the Zim script to ${ZIM_HOME}"
+  local -r zscript=${ZIM_HOME}/zimfw.zsh
+  local -r zurl=https://raw.githubusercontent.com/zimfw/zimfw/develop/zimfw.zsh
+  if (( ${+commands[wget]} )); then
+    command wget -nv -O ${zscript} ${zurl} || return 1
+  elif (( ${+commands[curl]} )); then
+    command curl -fsSL -o ${zscript} ${zurl} || return 1
+  else
+    print -u2 -P '%F{red}x Either %Bwget%b or %Bcurl%b are required to download the Zim script.%f'
+    return 1
+  fi
+); then
+  print -PR "%F{green})%f Downloaded the Zim script to %B${ZIM_HOME}%b"
 else
-  print -u2 -PR "%F{red}✗ Could not download the Zim script to ${ZIM_HOME}%f"
+  command rm -rf ${ZIM_HOME}
+  print -u2 -PR "%F{red}x Could not download the Zim script to %B${ZIM_HOME}%b%f"
   return 1
 fi
 
@@ -259,28 +256,28 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
       print -R ${ZTEMPLATES[${ZTEMPLATE}]}
       cat ${USER_FILE}
     ) ${USER_FILE} 2>&1); then
-      print -PR "%F{green}✓%f Prepended Zim template to ${USER_FILE}"
+      print -PR "%F{green})%f Prepended Zim template to %B${USER_FILE}%b"
     else
-      print -u2 -PR "%F{red}✗ Error prepending Zim template to ${USER_FILE}%f"$'\n'${ERR}
+      print -u2 -PR "%F{red}x Error prepending Zim template to %B${USER_FILE}%b%f"$'\n'${ERR}
     fi
   else
     if ERR=$(print -R ${ZTEMPLATES[${ZTEMPLATE}]} > ${USER_FILE}); then
-      print -PR "%F{green}✓%f Copied Zim template to ${USER_FILE}"
+      print -PR "%F{green})%f Copied Zim template to %B${USER_FILE}%b"
     else
-      print -u2 -PR "%F{red}✗ Error copying Zim template to ${USER_FILE}%f"$'\n'${ERR}
+      print -u2 -PR "%F{red}x Error copying Zim template to %B${USER_FILE}%b%f"$'\n'${ERR}
     fi
   fi
 done
 
-print -n "Installing modules …"
+print -n "Installing modules ..."
 if ERR=$(source ${ZIM_HOME}/zimfw.zsh install -q 2>&1); then
-  print -P ${CLEAR_LINE}'%F{green}✓%f Installed modules.'
+  print -P ${CLEAR_LINE}'%F{green})%f Installed modules.'
 else
-  print -u2 -PR ${CLEAR_LINE}${ERR}$'\n''%F{red}✗ Could not install modules.%f'
+  print -u2 -PR ${CLEAR_LINE}${ERR}$'\n''%F{red}x Could not install modules.%f'
 fi
 
-print -n "Initializing Zim …"
+print -n "Initializing Zim ..."
 source =( print -R ${ZTEMPLATES[zshrc]} )
 source =( print -R ${ZTEMPLATES[zlogin]} )
-print -P ${CLEAR_LINE}'%F{green}✓%f All done. Enjoy your Zsh IMproved! Restart your terminal for changes to take effect.'
+print -P ${CLEAR_LINE}'All done. Enjoy your Zsh IMproved! Restart your terminal for changes to take effect.'
 
