@@ -130,7 +130,14 @@ ZTEMPLATES[zlogin]="#
 #
 
 # Initialize Zim
-zimfw login-init -q &!
+source \${ZIM_HOME}/login_init.zsh -q &!
+"
+ZTEMPLATES[zshenv]="#
+# User configuration sourced by all invocations of the shell
+#
+
+# Define Zim location
+ZIM_HOME=${ZIM_HOME_STR}
 "
 ZTEMPLATES[zshrc]="#
 # User configuration sourced by interactive shells
@@ -217,7 +224,6 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 # Initialize modules
 # ------------------
 
-ZIM_HOME=${ZIM_HOME_STR}
 if [[ \${ZIM_HOME}/init.zsh -ot \${ZDOTDIR:-\${HOME}}/.zimrc ]]; then
   # Update static initialization script if it's outdated, before sourcing it
   source \${ZIM_HOME}/zimfw.zsh init -q
