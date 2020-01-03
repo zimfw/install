@@ -43,20 +43,20 @@ WORDCHARS=${WORDCHARS//[\/]}
 #zstyle ':zim:completion' dumpfile "${ZDOTDIR:-${HOME}}/.zcompdump-${ZSH_VERSION}"
 
 #
-# environment
-#
-
-# Set a custom terminal title format. Use prompt expansion strings for dynamic data.
-# See http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
-# For example, '%n@%m: %~' corresponds to 'username@host: /current/directory'.
-zstyle ':zim:termtitle' format '%n@%m: %~'
-
-#
 # input
 #
 
 # Append `../` to your input for each `.` you type after an initial `..`
 #zstyle ':zim:input' double-dot-expand yes
+
+#
+# termtitle
+#
+
+# Set a custom terminal title format using prompt expansion escape sequences.
+# See http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
+# If none is provided, the default '%n@%m: %~' is used.
+#zstyle ':zim:termtitle' format '%1~'
 
 #
 # zsh-autosuggestions

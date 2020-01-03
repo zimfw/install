@@ -102,26 +102,40 @@ else
 fi
 
 # Prepend templates
-ZTEMPLATES[zimrc]="#
+ZTEMPLATES[zimrc]="# -------
 # Modules
-#
+# -------
 
+# Sets sane Zsh built-in environment options.
 zmodule environment
+# Provides handy git aliases and functions.
 zmodule git
+# Applies correct bindkeys for input events.
 zmodule input
+# Sets a custom terminal title.
 zmodule termtitle
+# Utility aliases and functions. Adds colour to ls, grep and less.
 zmodule utility
 
+#
 # Prompt
+#
+# Exposes git repository status information to prompts.
 zmodule git-info
+# A customizable version of steeef's prompt theme.
 zmodule steeef
 
+# Additional completion definitions for Zsh.
 zmodule zsh-users/zsh-completions
+# Enables and configures smart and extensive tab completion.
 # completion must be sourced after zsh-users/zsh-completions
 zmodule completion
+# Fish-like autosuggestions for Zsh.
 zmodule zsh-users/zsh-autosuggestions
+# Fish-like syntax highlighting for Zsh.
 # zsh-users/zsh-syntax-highlighting must be sourced after completion
 zmodule zsh-users/zsh-syntax-highlighting
+# Fish-like history search (up arrow) for Zsh.
 # zsh-users/zsh-history-substring-search must be sourced after zsh-users/zsh-syntax-highlighting
 zmodule zsh-users/zsh-history-substring-search
 "
@@ -184,20 +198,20 @@ WORDCHARS=\${WORDCHARS//[\\/]}
 #zstyle ':zim:completion' dumpfile \"\${ZDOTDIR:-\${HOME}}/.zcompdump-\${ZSH_VERSION}\"
 
 #
-# environment
-#
-
-# Set a custom terminal title format. Use prompt expansion strings for dynamic data.
-# See http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
-# For example, '%n@%m: %~' corresponds to 'username@host: /current/directory'.
-zstyle ':zim:termtitle' format '%n@%m: %~'
-
-#
 # input
 #
 
 # Append \`../\` to your input for each \`.\` you type after an initial \`..\`
 #zstyle ':zim:input' double-dot-expand yes
+
+#
+# termtitle
+#
+
+# Set a custom terminal title format using prompt expansion escape sequences.
+# See http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
+# If none is provided, the default '%n@%m: %~' is used.
+#zstyle ':zim:termtitle' format '%1~'
 
 #
 # zsh-autosuggestions
