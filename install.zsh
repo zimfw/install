@@ -22,6 +22,14 @@ typeset -A ZTEMPLATES
 readonly CLEAR_LINE=$'\E[2K\r'
 ZIM_HOME_STR='${ZDOTDIR:-${HOME}}/.zim'
 
+# Check if git is installed
+if (( ${+commands[git]} )); then
+  print -P '%F{green})%f Git is installed.'
+else
+  print -u2 -P '%F{red}x Git is required to install Zim.%f'
+  return 1
+fi
+
 # Check Zsh version
 autoload -Uz is-at-least && if ! is-at-least 5.2; then
   print -u2 -PR "%F{red}x You're using Zsh version ${ZSH_VERSION} and versions < 5.2 are not supported. Please update your Zsh.%f"

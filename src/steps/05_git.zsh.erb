@@ -1,0 +1,7 @@
+# Check if git is installed
+if (( ${+commands[git]} )); then
+  print -P '<%= okay %>Git is installed.'
+else
+  print -u2 -P '%F{red}<%= error %>Git is required to install Zim.%f'
+  return 1
+fi
