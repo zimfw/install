@@ -89,10 +89,10 @@ if [[ -e ${ZSHRC} ]]; then
 fi
 
 # Download zimfw script
+local -r zscript=${ZIM_HOME}/zimfw.zsh
 if (
   command mkdir -p ${ZIM_HOME} || return 1
-  local -r zscript=${ZIM_HOME}/zimfw.zsh
-  local -r zurl=https://raw.githubusercontent.com/zimfw/zimfw/develop/zimfw.zsh
+  local -r zurl=https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
   if (( ${+commands[wget]} )); then
     command wget -nv -O ${zscript} ${zurl} || return 1
   elif (( ${+commands[curl]} )); then
@@ -102,10 +102,10 @@ if (
     return 1
   fi
 ); then
-  print -PR "%F{green})%f Downloaded the Zim script to %B${ZIM_HOME}%b"
+  print -PR "%F{green})%f Downloaded the Zim script to %B${zscript}%b"
 else
   command rm -rf ${ZIM_HOME}
-  print -u2 -PR "%F{red}x Could not download the Zim script to %B${ZIM_HOME}%b%f"
+  print -u2 -PR "%F{red}x Could not download the Zim script to %B${zscript}%b%f"
   return 1
 fi
 
