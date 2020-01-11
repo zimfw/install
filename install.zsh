@@ -89,23 +89,23 @@ if [[ -e ${ZSHRC} ]]; then
 fi
 
 # Download zimfw script
-local -r zscript=${ZIM_HOME}/zimfw.zsh
+local -r ztarget=${ZIM_HOME}/zimfw.zsh
 if (
   command mkdir -p ${ZIM_HOME} || return 1
   local -r zurl=https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
-  if (( ${+commands[wget]} )); then
-    command wget -nv -O ${zscript} ${zurl} || return 1
-  elif (( ${+commands[curl]} )); then
-    command curl -fsSL -o ${zscript} ${zurl} || return 1
+  if (( ${+commands[curl]} )); then
+    command curl -fsSL -o ${ztarget} ${zurl} || return 1
+  elif (( ${+commands[wget]} )); then
+    command wget -nv -O ${ztarget} ${zurl} || return 1
   else
-    print -u2 -P '%F{red}x Either %Bwget%b or %Bcurl%b are required to download the Zim script.%f'
+    print -u2 -P '%F{red}x Either %Bcurl%b or %Bwget%b are required to download the Zim script.%f'
     return 1
   fi
 ); then
-  print -PR "%F{green})%f Downloaded the Zim script to %B${zscript}%b"
+  print -PR "%F{green})%f Downloaded the Zim script to %B${ztarget}%b"
 else
   command rm -rf ${ZIM_HOME}
-  print -u2 -PR "%F{red}x Could not download the Zim script to %B${zscript}%b%f"
+  print -u2 -PR "%F{red}x Could not download the Zim script to %B${ztarget}%b%f"
   return 1
 fi
 
