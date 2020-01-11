@@ -159,7 +159,7 @@ ZTEMPLATES[zshenv]="#
 #
 
 # Define Zim location
-ZIM_HOME=${ZIM_HOME_STR}
+: \${ZIM_HOME=${ZIM_HOME_STR}}
 "
 ZTEMPLATES[zshrc]="#
 # User configuration sourced by interactive shells
