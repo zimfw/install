@@ -235,6 +235,13 @@ WORDCHARS=\${WORDCHARS//[\\/]}
 #zstyle ':zim:completion' dumpfile \"\${ZDOTDIR:-\${HOME}}/.zcompdump-\${ZSH_VERSION}\"
 
 #
+# git
+#
+
+# Set a custom prefix for the generated aliases. The default prefix is 'G'.
+#zstyle ':zim:git' aliases-prefix 'g'
+
+#
 # input
 #
 
