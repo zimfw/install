@@ -132,7 +132,8 @@ else
 fi
 
 # Prepend templates
-ZTEMPLATES[zimrc]="# -------
+ZTEMPLATES[zimrc]="# Start configuration added by Zim install {{{
+# -------
 # Modules
 # -------
 
@@ -168,22 +169,28 @@ zmodule zsh-users/zsh-syntax-highlighting
 # Fish-like history search (up arrow) for Zsh.
 # zsh-users/zsh-history-substring-search must be sourced after zsh-users/zsh-syntax-highlighting
 zmodule zsh-users/zsh-history-substring-search
+# }}} End configuration added by Zim install
 "
-ZTEMPLATES[zlogin]="#
+ZTEMPLATES[zlogin]="# Start configuration added by Zim install {{{
+#
 # User configuration sourced by login shells
 #
 
 # Initialize Zim
 source \${ZIM_HOME}/login_init.zsh -q &!
+# }}} End configuration added by Zim install
 "
-ZTEMPLATES[zshenv]="#
+ZTEMPLATES[zshenv]="# Start configuration added by Zim install {{{
+#
 # User configuration sourced by all invocations of the shell
 #
 
 # Define Zim location
 : \${ZIM_HOME=${ZIM_HOME_STR}}
+# }}} End configuration added by Zim install
 "
-ZTEMPLATES[zshrc]="#
+ZTEMPLATES[zshrc]="# Start configuration added by Zim install {{{
+#
 # User configuration sourced by interactive shells
 #
 
@@ -297,6 +304,7 @@ bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
+# }}} End configuration added by Zim install
 "
 for ZTEMPLATE in ${(k)ZTEMPLATES}; do
   USER_FILE=${ZDOTDIR:-${HOME}}/.${ZTEMPLATE}
