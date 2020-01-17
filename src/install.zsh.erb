@@ -23,7 +23,7 @@ class Zim
   def render_template(filename)
     render(filename)
       .gsub(/\\/, "\\\\\\\\")
-      .gsub(/(\$[^']|"|`)/, "\\\\\\1")
+      .gsub(/(?=\$[^']|"|`)/, "\\\\")
       .gsub(/\\\${ZDOTDIR:-\\\${HOME}}\/\.zim\b/, "${ZIM_HOME_STR}")
   end
 
@@ -32,9 +32,14 @@ class Zim
       "ZTEMPLATES[#{File.basename(filename)}]=\"#{render_template(filename)}\""
     }.join("\n")
   end
+
+  def render_commented(filename)
+    render(filename).gsub(/^(?=.)/, "# ").gsub(/^$/, "#")
+  end
 end
 zim = Zim.new
 %># AUTOMATICALLY GENERATED FILE. EDIT ONLY THE SOURCE FILES AND THEN COMPILE.
 # DO NOT DIRECTLY EDIT THIS FILE!
 
+<%= zim.render_commented("LICENSE") %>
 <%= zim.render_all("src/steps/*.erb") %>
