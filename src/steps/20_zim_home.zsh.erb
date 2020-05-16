@@ -9,7 +9,7 @@ else
   print -PR "<%= okay %>Your ZIM_HOME is customized to %B${ZIM_HOME_STR}%b"
 fi
 if [[ -e ${ZIM_HOME} ]]; then
-  if (( $(command find ${ZIM_HOME} -type d -maxdepth 0 -empty | wc -l) )); then
+  if [[ -n ${ZIM_HOME}(#qN/^F) ]]; then
     print -P '<%= okay %>ZIM_HOME already exists, but is empty.'
   else
     print -u2 -PR "%F{red}<%= error %>%B${ZIM_HOME}%b already exists. Please set ZIM_HOME to the path where you want to install Zim."
