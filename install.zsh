@@ -339,6 +339,7 @@ if ERR=$(source ${ZIM_HOME}/zimfw.zsh install -q 2>&1); then
   print -P ${CLEAR_LINE}'%F{green})%f Installed modules.'
 else
   print -u2 -PR ${CLEAR_LINE}${ERR}$'\n''%F{red}x Could not install modules.%f'
+  return 1
 fi
 
 print -n "Initializing Zim ..."

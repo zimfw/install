@@ -3,4 +3,5 @@ if ERR=$(source ${ZIM_HOME}/zimfw.zsh install -q 2>&1); then
   print -P ${CLEAR_LINE}'<%= okay %>Installed modules.'
 else
   print -u2 -PR ${CLEAR_LINE}${ERR}$'\n''%F{red}<%= error %>Could not install modules.%f'
+  return 1
 fi
