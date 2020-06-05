@@ -40,6 +40,7 @@ _replace_home() {
   fi
 }
 
+setopt LOCAL_OPTIONS EXTENDED_GLOB
 typeset -A ZTEMPLATES
 readonly CLEAR_LINE=$'\E[2K\r'
 ZIM_HOME_STR='${ZDOTDIR:-${HOME}}/.zim'
