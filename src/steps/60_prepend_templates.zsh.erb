@@ -11,12 +11,14 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
       print -PR "<%= okay %>Prepended Zim template to %B${USER_FILE}%b"
     else
       print -u2 -PR "%F{red}<%= error %>Error prepending Zim template to %B${USER_FILE}%b%f"$'\n'${ERR}
+      return 1
     fi
   else
     if ERR=$(print -R ${ZTEMPLATES[${ZTEMPLATE}]} > ${USER_FILE}); then
       print -PR "<%= okay %>Copied Zim template to %B${USER_FILE}%b"
     else
       print -u2 -PR "%F{red}<%= error %>Error copying Zim template to %B${USER_FILE}%b%f"$'\n'${ERR}
+      return 1
     fi
   fi
 done

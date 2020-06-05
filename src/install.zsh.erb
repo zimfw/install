@@ -1,12 +1,13 @@
 <%# coding: UTF-8 %><%
 class Zim
-  attr_reader :home, :min_zsh_version, :ellipsis, :okay, :error, :done, :failed
+  attr_reader :home, :min_zsh_version, :ellipsis, :okay, :warn, :error, :done, :failed
 
   def initialize
     @home = "${ZDOTDIR:-${HOME}}"
     @min_zsh_version = "5.2"
     @ellipsis = " ..."
     @okay = "%F{green})%f "
+    @warn = "! "
     @error = "x "
     @done = ""
     @failed = ""

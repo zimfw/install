@@ -24,7 +24,7 @@
 # SOFTWARE.
 
 if [[ -z ${ZSH_VERSION} ]]; then
-  print -u2 -P '%F{red}x You must use zsh to run install.zsh'
+  print -u2 -P '%F{red}x You must use zsh to run install.zsh%f'
   return 1
 fi
 
@@ -74,7 +74,7 @@ if [[ -e ${ZIM_HOME} ]]; then
   if [[ -n ${ZIM_HOME}(#qN/^F) ]]; then
     print -P '%F{green})%f ZIM_HOME already exists, but is empty.'
   else
-    print -u2 -PR "%F{red}x %B${ZIM_HOME}%b already exists. Please set ZIM_HOME to the path where you want to install Zim."
+    print -u2 -PR "%F{red}x %B${ZIM_HOME}%b already exists. Please set ZIM_HOME to the path where you want to install Zim.%f"
     return 1
   fi
 fi
@@ -87,25 +87,29 @@ else
   if command chsh -s ${ZPATH}; then
     print -PR "%F{green})%f Changed your default shell to %B${ZPATH}%b"
   else
-    print -u2 -PR "%F{red}x Could not change your default shell to %B${ZPATH}%b. Please manually change it later."
+    print -u2 -PR "%F{yellow}! Could not change your default shell to %B${ZPATH}%b. Please manually change it later.%f"
   fi
 fi
 
 # Check if other frameworks are enabled
 readonly ZSHRC=${ZDOTDIR:-${HOME}}/.zshrc
 if [[ -e ${ZSHRC} ]]; then
+  if grep -Eq '^[^#]*(source|\.).*(zim(fw)?|\$[{]?ZIM_HOME[}]?)/init.zsh' ${ZSHRC}; then
+    print -u2 -P '%F{red}x You seem to have Zim installed already. Please uninstall it first.%f'
+    return 1
+  fi
   if grep -Eq '^[^#]*(source|\.).*prezto/init.zsh' ${ZSHRC}; then
-    print -u2 -P '%F{red}x You seem to have prezto enabled. Please disable it.%f'
+    print -u2 -P '%F{yellow}! You seem to have prezto enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*(source|\.).*/oh-my-zsh.sh' ${ZSHRC}; then
-    print -u2 -P '%F{red}x You seem to have oh-my-zsh enabled. Please disable it.%f'
+    print -u2 -P '%F{yellow}! You seem to have oh-my-zsh enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*antibody bundle' ${ZSHRC}; then
-    print -u2 -P '%F{red}x You seem to have antibody enabled. Please disable it.%f'
+    print -u2 -P '%F{yellow}! You seem to have antibody enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*antigen apply' ${ZSHRC}; then
-    print -u2 -P '%F{red}x You seem to have antigen enabled. Please disable it.%f'
+    print -u2 -P '%F{yellow}! You seem to have antigen enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*(source|\.).*/zgen.zsh' ${ZSHRC}; then
-    print -u2 -P '%F{red}x You seem to have zgen enabled. Please disable it.%f'
+    print -u2 -P '%F{yellow}! You seem to have zgen enabled. Please disable it.%f'
   elif grep -Eq '^[^#]*zplug load' ${ZSHRC}; then
-    print -u2 -P '%F{red}x You seem to have zplug enabled. Please disable it.%f'
+    print -u2 -P '%F{yellow}! You seem to have zplug enabled. Please disable it.%f'
   else
     print -P '%F{green})%f No other Zsh frameworks detected.'
   fi
@@ -325,12 +329,14 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
       print -PR "%F{green})%f Prepended Zim template to %B${USER_FILE}%b"
     else
       print -u2 -PR "%F{red}x Error prepending Zim template to %B${USER_FILE}%b%f"$'\n'${ERR}
+      return 1
     fi
   else
     if ERR=$(print -R ${ZTEMPLATES[${ZTEMPLATE}]} > ${USER_FILE}); then
       print -PR "%F{green})%f Copied Zim template to %B${USER_FILE}%b"
     else
       print -u2 -PR "%F{red}x Error copying Zim template to %B${USER_FILE}%b%f"$'\n'${ERR}
+      return 1
     fi
   fi
 done

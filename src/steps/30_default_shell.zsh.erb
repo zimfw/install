@@ -6,6 +6,6 @@ else
   if command chsh -s ${ZPATH}; then
     print -PR "<%= okay %>Changed your default shell to %B${ZPATH}%b"
   else
-    print -u2 -PR "%F{red}<%= error %>Could not change your default shell to %B${ZPATH}%b. Please manually change it later."
+    print -u2 -PR "%F{yellow}<%= warn %>Could not change your default shell to %B${ZPATH}%b. Please manually change it later.%f"
   fi
 fi

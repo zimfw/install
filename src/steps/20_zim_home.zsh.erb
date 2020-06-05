@@ -12,7 +12,7 @@ if [[ -e ${ZIM_HOME} ]]; then
   if [[ -n ${ZIM_HOME}(#qN/^F) ]]; then
     print -P '<%= okay %>ZIM_HOME already exists, but is empty.'
   else
-    print -u2 -PR "%F{red}<%= error %>%B${ZIM_HOME}%b already exists. Please set ZIM_HOME to the path where you want to install Zim."
+    print -u2 -PR "%F{red}<%= error %>%B${ZIM_HOME}%b already exists. Please set ZIM_HOME to the path where you want to install Zim.%f"
     return 1
   fi
 fi
