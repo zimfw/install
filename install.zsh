@@ -94,7 +94,7 @@ fi
 # Check if other frameworks are enabled
 readonly ZSHRC=${ZDOTDIR:-${HOME}}/.zshrc
 if [[ -e ${ZSHRC} ]]; then
-  if grep -Eq '^[^#]*(source|\.).*(zim(fw)?|\$[{]?ZIM_HOME[}]?)/init.zsh' ${ZSHRC}; then
+  if grep -Eq "^[^#]*(source|\\.).*(${ZIM_HOME:t}|\\\$[{]?ZIM_HOME[}]?)/init.zsh" ${ZSHRC}; then
     print -u2 -P '%F{red}x You seem to have Zim installed already. Please uninstall it first.%f'
     return 1
   fi
