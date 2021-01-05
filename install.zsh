@@ -3,7 +3,7 @@
 
 # MIT License
 #
-# Copyright (c) 2019-2020 Eric Nielsen and contributors
+# Copyright (c) 2019-2021 Eric Nielsen and contributors
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -287,8 +287,8 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 # Initialize modules
 # ------------------
 
-if [[ \${ZIM_HOME}/init.zsh -ot \${ZDOTDIR:-\${HOME}}/.zimrc ]]; then
-  # Update static initialization script if it's outdated, before sourcing it
+if [[ ! \${ZIM_HOME}/init.zsh -nt \${ZDOTDIR:-\${HOME}}/.zimrc ]]; then
+  # Update static initialization script if it does not exist or it's outdated, before sourcing it
   source \${ZIM_HOME}/zimfw.zsh init -q
 fi
 source \${ZIM_HOME}/init.zsh
