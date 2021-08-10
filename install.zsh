@@ -45,14 +45,6 @@ typeset -A ZTEMPLATES
 readonly CLEAR_LINE=$'\E[2K\r'
 ZIM_HOME_STR='${ZDOTDIR:-${HOME}}/.zim'
 
-# Check if git is installed
-if (( ${+commands[git]} )); then
-  print -P '%F{green})%f Git is installed.'
-else
-  print -u2 -P '%F{red}x Git is required to install Zim.%f'
-  return 1
-fi
-
 # Check Zsh version
 autoload -Uz is-at-least && if ! is-at-least 5.2; then
   print -u2 -PR "%F{red}x You're using Zsh version ${ZSH_VERSION} and versions < 5.2 are not supported. Please update your Zsh.%f"
@@ -137,6 +129,11 @@ else
 fi
 
 # Prepend templates
+if (( ! ${+commands[git]} )); then
+  print -PR "%F{green})%f Git not installed, setting degit as the default in your .zshrc file.%b"
+  # Also set degit as the defaul in the current shell session, used by the install step.
+  zstyle ':zim:zmodule' use 'degit'
+fi
 ZTEMPLATES[zimrc]="# Start configuration added by Zim install {{{
 # -------
 # Modules
@@ -228,6 +225,12 @@ bindkey -e
 # Remove path separator from WORDCHARS.
 WORDCHARS=\${WORDCHARS//[\\/]}
 
+# -----------------
+# Zim configuration
+# -----------------
+
+# Use degit instead of git as the default tool to install and update modules.
+#zstyle ':zim:zmodule' use 'degit'
 
 # --------------------
 # Module configuration
@@ -322,24 +325,19 @@ bindkey -M vicmd 'j' history-substring-search-down
 "
 for ZTEMPLATE in ${(k)ZTEMPLATES}; do
   USER_FILE=${ZDOTDIR:-${HOME}}/.${ZTEMPLATE}
-  if [[ -e ${USER_FILE} ]]; then
-    USER_FILE=${USER_FILE:A}
-    if ERR=$(command mv =(
+  USER_FILE=${USER_FILE:A}
+  if ERR=$(command mv =(
+    if [[ ${ZTEMPLATE} == zshrc && ${+commands[git]} -eq 0 ]]; then
+      print -R "${(F)${(@f)ZTEMPLATES[${ZTEMPLATE}]}/(#b)\#(zstyle*degit*)/$match[1]}"
+    else
       print -R ${ZTEMPLATES[${ZTEMPLATE}]}
-      cat ${USER_FILE}
-    ) ${USER_FILE} 2>&1); then
-      print -PR "%F{green})%f Prepended Zim template to %B${USER_FILE}%b"
-    else
-      print -u2 -PR "%F{red}x Error prepending Zim template to %B${USER_FILE}%b%f"$'\n'${ERR}
-      return 1
     fi
+    if [[ -e ${USER_FILE} ]] cat ${USER_FILE}
+  ) ${USER_FILE} 2>&1); then
+    print -PR "%F{green})%f Prepended Zim template to %B${USER_FILE}%b"
   else
-    if ERR=$(print -R ${ZTEMPLATES[${ZTEMPLATE}]} > ${USER_FILE}); then
-      print -PR "%F{green})%f Copied Zim template to %B${USER_FILE}%b"
-    else
-      print -u2 -PR "%F{red}x Error copying Zim template to %B${USER_FILE}%b%f"$'\n'${ERR}
-      return 1
-    fi
+    print -u2 -PR "%F{red}x Error prepending Zim template to %B${USER_FILE}%b%f"$'\n'${ERR}
+    return 1
   fi
 done
 
