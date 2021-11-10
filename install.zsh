@@ -333,9 +333,8 @@ bindkey -M vicmd 'j' history-substring-search-down
 # }}} End configuration added by Zim install
 "
 for ZTEMPLATE in ${(k)ZTEMPLATES}; do
-  USER_FILE=${ZDOTDIR:-${HOME}}/.${ZTEMPLATE}
-  USER_FILE=${USER_FILE:A}
-  if ERR=$(command mv =(
+  USER_FILE=${${:-${ZDOTDIR:-${HOME}}/.${ZTEMPLATE}}:A}
+  if ERR=$(command mv -f =(
     if [[ ${ZTEMPLATE} == zshrc && ${+commands[git]} -eq 0 ]]; then
       print -R "${(F)${(@f)ZTEMPLATES[${ZTEMPLATE}]}/(#b)\#(zstyle*degit*)/$match[1]}"
     else
@@ -345,7 +344,7 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
   ) ${USER_FILE} 2>&1); then
     print -PR "%F{green})%f Prepended Zim template to %B${USER_FILE}%b"
   else
-    print -u2 -PR "%F{red}x Error prepending Zim template to %B${USER_FILE}%b%f"$'\n'${ERR}
+    print -u2 -PlR "%F{red}x Error prepending Zim template to %B${USER_FILE}%b%f" ${ERR}
     return 1
   fi
 done
@@ -354,7 +353,7 @@ print -n "Installing modules ..."
 if ERR=$(source ${ZIM_HOME}/zimfw.zsh install -q 2>&1); then
   print -P ${CLEAR_LINE}'%F{green})%f Installed modules.'
 else
-  print -u2 -PR ${CLEAR_LINE}${ERR}$'\n''%F{red}x Could not install modules.%f'
+  print -u2 -PlR "${CLEAR_LINE}${ERR}" '%F{red}x Could not install modules.%f'
   return 1
 fi
 

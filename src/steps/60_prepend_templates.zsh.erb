@@ -6,9 +6,8 @@ if (( ! ${+commands[git]} )); then
 fi
 <%= render_templates("src/templates/*") %>
 for ZTEMPLATE in ${(k)ZTEMPLATES}; do
-  USER_FILE=<%= home %>/.${ZTEMPLATE}
-  USER_FILE=${USER_FILE:A}
-  if ERR=$(command mv =(
+  USER_FILE=${${:-<%= home %>/.${ZTEMPLATE}}:A}
+  if ERR=$(command mv -f =(
     if [[ ${ZTEMPLATE} == zshrc && ${+commands[git]} -eq 0 ]]; then
       print -R "${(F)${(@f)ZTEMPLATES[${ZTEMPLATE}]}/(#b)\#(zstyle*degit*)/$match[1]}"
     else
@@ -18,7 +17,7 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
   ) ${USER_FILE} 2>&1); then
     print -PR "<%= okay %>Prepended Zim template to %B${USER_FILE}%b"
   else
-    print -u2 -PR "%F{red}<%= error %>Error prepending Zim template to %B${USER_FILE}%b%f"$'\n'${ERR}
+    print -u2 -PlR "%F{red}<%= error %>Error prepending Zim template to %B${USER_FILE}%b%f" ${ERR}
     return 1
   fi
 done
