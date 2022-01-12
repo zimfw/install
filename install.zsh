@@ -165,32 +165,14 @@ zmodule zsh-users/zsh-completions
 # Enables and configures smart and extensive tab completion.
 # completion must be sourced after zsh-users/zsh-completions
 zmodule completion
-# Fish-like autosuggestions for Zsh.
-zmodule zsh-users/zsh-autosuggestions
 # Fish-like syntax highlighting for Zsh.
 # zsh-users/zsh-syntax-highlighting must be sourced after completion
 zmodule zsh-users/zsh-syntax-highlighting
 # Fish-like history search (up arrow) for Zsh.
 # zsh-users/zsh-history-substring-search must be sourced after zsh-users/zsh-syntax-highlighting
 zmodule zsh-users/zsh-history-substring-search
-# }}} End configuration added by Zim install
-"
-ZTEMPLATES[zlogin]="# Start configuration added by Zim install {{{
-#
-# User configuration sourced by login shells
-#
-
-# Initialize Zim
-source \${ZIM_HOME}/login_init.zsh -q &!
-# }}} End configuration added by Zim install
-"
-ZTEMPLATES[zshenv]="# Start configuration added by Zim install {{{
-#
-# User configuration sourced by all invocations of the shell
-#
-
-# Define Zim location
-: \${ZIM_HOME=${ZIM_HOME_STR}}
+# Fish-like autosuggestions for Zsh.
+zmodule zsh-users/zsh-autosuggestions
 # }}} End configuration added by Zim install
 "
 ZTEMPLATES[zshrc]="# Start configuration added by Zim install {{{
@@ -271,6 +253,10 @@ WORDCHARS=\${WORDCHARS//[\\/]}
 # zsh-autosuggestions
 #
 
+# Disable automatic widget re-binding on each precmd. This can be set when
+# zsh-users/zsh-autosuggestions is the last module in your ~/.zimrc.
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+
 # Customize the style that the suggestions are shown with.
 # See https://github.com/zsh-users/zsh-autosuggestions/blob/master/README.md#suggestion-highlight-style
 #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
@@ -292,13 +278,13 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 # Initialize modules
 # ------------------
 
+ZIM_HOME=${ZIM_HOME_STR}
 if [[ ! -e \${ZIM_HOME}/zimfw.zsh ]]; then
   # Download zimfw script if missing.
-  command mkdir -p \${ZIM_HOME}
   if (( \${+commands[curl]} )); then
-    command curl -fsSL -o \${ZIM_HOME}/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+    curl -fsSL --create-dirs -o \${ZIM_HOME}/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
   else
-    command wget -nv -O \${ZIM_HOME}/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+    mkdir -p \${ZIM_HOME} && wget -nv -O \${ZIM_HOME}/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
   fi
 fi
 if [[ ! \${ZIM_HOME}/init.zsh -nt \${ZDOTDIR:-\${HOME}}/.zimrc ]]; then
@@ -350,15 +336,12 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
 done
 
 print -n "Installing modules ..."
-if ERR=$(source ${ZIM_HOME}/zimfw.zsh install -q 2>&1); then
+if ERR=$(source ${ZIM_HOME}/zimfw.zsh init -q 2>&1); then
   print -P ${CLEAR_LINE}'%F{green})%f Installed modules.'
 else
   print -u2 -PlR "${CLEAR_LINE}${ERR}" '%F{red}x Could not install modules.%f'
   return 1
 fi
 
-print -n "Initializing Zim ..."
-source =( print -R ${ZTEMPLATES[zshrc]} )
-source =( print -R ${ZTEMPLATES[zlogin]} )
 print -P ${CLEAR_LINE}'All done. Enjoy your Zsh IMproved! Restart your terminal for changes to take effect.'
 

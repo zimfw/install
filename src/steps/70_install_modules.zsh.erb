@@ -1,5 +1,5 @@
 print -n "Installing modules<%= ellipsis %>"
-if ERR=$(source ${ZIM_HOME}/zimfw.zsh install -q 2>&1); then
+if ERR=$(source ${ZIM_HOME}/zimfw.zsh init -q 2>&1); then
   print -P ${CLEAR_LINE}'<%= okay %>Installed modules.'
 else
   print -u2 -PlR "${CLEAR_LINE}${ERR}" '%F{red}<%= error %>Could not install modules.%f'
