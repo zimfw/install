@@ -24,11 +24,11 @@
 # SOFTWARE.
 
 if [[ -z ${ZSH_VERSION} ]]; then
-  print -u2 -P '%F{red}x You must use zsh to run install.zsh%f'
-  return 1
+  echo 'You must use zsh to run install.zsh' >&2
+  exit 1
 fi
 
-emulate -L zsh
+emulate -L zsh -o EXTENDED_GLOB
 
 _replace_home() {
   local abs_path=${1:A}
@@ -40,7 +40,6 @@ _replace_home() {
   fi
 }
 
-setopt LOCAL_OPTIONS EXTENDED_GLOB
 typeset -A ZTEMPLATES
 readonly CLEAR_LINE=$'\E[2K\r'
 ZIM_HOME_STR='${ZDOTDIR:-${HOME}}/.zim'
