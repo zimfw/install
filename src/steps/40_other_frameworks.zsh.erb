@@ -1,26 +1,26 @@
 # Check if other frameworks are enabled
 for ZDOTFILE in /etc/z(shenv|profile|shrc|login)(N) <%= home %>/.z(shenv|profile|shrc|login)(N); do
   if grep -Eq "^[^#]*(source|\\.).*(${ZIM_HOME:t}|\\\$[{]?ZIM_HOME[}]?)/init.zsh" ${ZDOTFILE}; then
-    print -u2 -P "%F{red}<%= error%>You seem to have Zim already installed in %B${ZDOTFILE}%b. Please uninstall it first.%f"
+    print -u2 -P "%F{red}<%= error %>You seem to have Zim already installed in %B${ZDOTFILE}%b. Please uninstall it first.%f"
     return 1
   fi
   if grep -Eq '^[^#]*(source|\.).*prezto/init.zsh' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}<%= warn%>You seem to have prezto enabled in %B${ZDOTFILE}%b. Please disable it.%f"
+    print -u2 -P "%F{yellow}<%= warn %>You seem to have prezto enabled in %B${ZDOTFILE}%b. Please disable it.%f"
   fi
   if grep -Eq '^[^#]*(source|\.).*/oh-my-zsh.sh' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}<%= warn%>You seem to have oh-my-zsh enabled in %B${ZDOTFILE}%b. Please disable it.%f"
+    print -u2 -P "%F{yellow}<%= warn %>You seem to have oh-my-zsh enabled in %B${ZDOTFILE}%b. Please disable it.%f"
   fi
   if grep -Eq '^[^#]*antibody bundle' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}<%= warn%>You seem to have antibody enabled in %B${ZDOTFILE}%b. Please disable it.%f"
+    print -u2 -P "%F{yellow}<%= warn %>You seem to have antibody enabled in %B${ZDOTFILE}%b. Please disable it.%f"
   fi
   if grep -Eq '^[^#]*antigen apply' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}<%= warn%>You seem to have antigen enabled in %B${ZDOTFILE}%b. Please disable it.%f"
+    print -u2 -P "%F{yellow}<%= warn %>You seem to have antigen enabled in %B${ZDOTFILE}%b. Please disable it.%f"
   fi
   if grep -Eq '^[^#]*(source|\.).*/zgen.zsh' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}<%= warn%>You seem to have zgen enabled in %B${ZDOTFILE}%b. Please disable it.%f"
+    print -u2 -P "%F{yellow}<%= warn %>You seem to have zgen enabled in %B${ZDOTFILE}%b. Please disable it.%f"
   fi
   if grep -Eq '^[^#]*zplug load' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}<%= warn%>You seem to have zplug enabled in %B${ZDOTFILE}%b. Please disable it.%f"
+    print -u2 -P "%F{yellow}<%= warn %>You seem to have zplug enabled in %B${ZDOTFILE}%b. Please disable it.%f"
   fi
   if grep -Eq '^[^#]*compinit' ${ZDOTFILE}; then
     print -u2 -P "%F{yellow}<%= warn%>You seem to be already calling %Bcompinit%b in %B${ZDOTFILE}%b. Please remove it, because Zim's completion module will call %Bcompinit%b for you.%f"

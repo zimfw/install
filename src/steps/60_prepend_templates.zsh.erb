@@ -1,6 +1,6 @@
 # Prepend templates
 if (( ! ${+commands[git]} )); then
-  print -PR "<%= okay %>Git not installed, setting degit as the default in your .zshrc file.%b"
+  print -PR '<%= okay %>Git not installed, setting degit as the default in your .zshrc file.'
   # Also set degit as the defaul in the current shell session, used by the install step.
   zstyle ':zim:zmodule' use 'degit'
 fi

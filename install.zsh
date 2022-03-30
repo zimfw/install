@@ -134,7 +134,7 @@ fi
 
 # Prepend templates
 if (( ! ${+commands[git]} )); then
-  print -PR "%F{green})%f Git not installed, setting degit as the default in your .zshrc file.%b"
+  print -PR '%F{green})%f Git not installed, setting degit as the default in your .zshrc file.'
   # Also set degit as the defaul in the current shell session, used by the install step.
   zstyle ':zim:zmodule' use 'degit'
 fi
@@ -341,7 +341,7 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
   fi
 done
 
-print -n "Installing modules ..."
+print -n 'Installing modules ...'
 if ERR=$(source ${ZIM_HOME}/zimfw.zsh init -q 2>&1); then
   print -P ${CLEAR_LINE}'%F{green})%f Installed modules.'
 else
