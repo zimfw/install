@@ -83,7 +83,7 @@ else
 fi
 
 # Check if other frameworks are enabled
-for ZDOTFILE in /etc/z(shenv|profile|shrc|login)(N) ${ZDOTDIR:-${HOME}}/.z(shenv|profile|shrc|login)(N); do
+for ZDOTFILE in /etc/(zsh/)#(z|.z)(shenv|profile|shrc|login)(N) ${ZDOTDIR:-${HOME}}/.z(shenv|profile|shrc|login)(N); do
   if grep -Eq "^[^#]*(source|\\.).*(${ZIM_HOME:t}|\\\$[{]?ZIM_HOME[}]?)/init.zsh" ${ZDOTFILE}; then
     print -u2 -P "%F{red}x You seem to have Zim already installed in %B${ZDOTFILE}%b. Please uninstall it first.%f"
     return 1
