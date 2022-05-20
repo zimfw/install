@@ -84,30 +84,36 @@ fi
 
 # Check if other frameworks are enabled
 for ZDOTFILE in /etc/(zsh/)#(z|.z)(shenv|profile|shrc|login)(N) ${ZDOTDIR:-${HOME}}/.z(shenv|profile|shrc|login)(N); do
-  if grep -Eq "^[^#]*(source|\\.).*(${ZIM_HOME:t}|\\\$[{]?ZIM_HOME[}]?)/init.zsh" ${ZDOTFILE}; then
+  if grep -Eq "^[^#]*(\\bsource|\\.).*(${ZIM_HOME:t}|\\\$[{]?ZIM_HOME[}]?)/init.zsh\\b" ${ZDOTFILE}; then
     print -u2 -P "%F{red}x You seem to have Zim already installed in %B${ZDOTFILE}%b. Please uninstall it first.%f"
     return 1
   fi
-  if grep -Eq '^[^#]*(source|\.).*prezto/init.zsh' ${ZDOTFILE}; then
+  if grep -Eq '^[^#]*(\bsource|\.).*prezto/init.zsh\b' ${ZDOTFILE}; then
     print -u2 -P "%F{yellow}! You seem to have prezto enabled in %B${ZDOTFILE}%b. Please disable it.%f"
   fi
-  if grep -Eq '^[^#]*(source|\.).*/oh-my-zsh.sh' ${ZDOTFILE}; then
+  if grep -Eq '^[^#]*(\bsource|\.).*/oh-my-zsh.sh\b' ${ZDOTFILE}; then
     print -u2 -P "%F{yellow}! You seem to have oh-my-zsh enabled in %B${ZDOTFILE}%b. Please disable it.%f"
   fi
-  if grep -Eq '^[^#]*antibody bundle' ${ZDOTFILE}; then
+  if grep -Eq '^[^#]*\bantibody\s+bundle\b' ${ZDOTFILE}; then
     print -u2 -P "%F{yellow}! You seem to have antibody enabled in %B${ZDOTFILE}%b. Please disable it.%f"
   fi
-  if grep -Eq '^[^#]*antigen apply' ${ZDOTFILE}; then
+  if grep -Eq '^[^#]*\bantigen\s+apply\b' ${ZDOTFILE}; then
     print -u2 -P "%F{yellow}! You seem to have antigen enabled in %B${ZDOTFILE}%b. Please disable it.%f"
   fi
-  if grep -Eq '^[^#]*(source|\.).*/zgen.zsh' ${ZDOTFILE}; then
+  if grep -Eq '^[^#]*(\bsource|\.).*/zgen.zsh\b' ${ZDOTFILE}; then
     print -u2 -P "%F{yellow}! You seem to have zgen enabled in %B${ZDOTFILE}%b. Please disable it.%f"
   fi
-  if grep -Eq '^[^#]*zplug load' ${ZDOTFILE}; then
+  if grep -Eq '^[^#]*\bzplug\s+load\b' ${ZDOTFILE}; then
     print -u2 -P "%F{yellow}! You seem to have zplug enabled in %B${ZDOTFILE}%b. Please disable it.%f"
   fi
-  if grep -Eq '^[^#]*compinit' ${ZDOTFILE}; then
+  if grep -Eq '^[^#]*\b(function\s+grml_vcs_info_toggle_colour\b|grml_vcs_info_toggle_colour\s*\(\s*\))' ${ZDOTFILE}; then
+    print -u2 -P "%F{yellow}! You seem to have grml installed in %B${ZDOTFILE}%b. Please uninstall it.%f"
+  fi
+  if grep -Eq '^[^#]*\bcompinit\b' ${ZDOTFILE}; then
     print -u2 -P "%F{yellow}! You seem to be already calling %Bcompinit%b in %B${ZDOTFILE}%b. Please remove it, because Zim's completion module will call %Bcompinit%b for you.%f"
+  fi
+  if grep -Eq '^[^#]*\bpromptinit\b' ${ZDOTFILE}; then
+    print -u2 -P "%F{yellow}! You seem to be calling %Bpromptinit%b in %B${ZDOTFILE}%b. Please remove it, because Zim already has a prompt theme for you that does not require %Bpromptinit%b.%f"
   fi
 done
 
