@@ -118,29 +118,32 @@ for ZDOTFILE in /etc/(zsh/)#(z|.z)(shenv|profile|shrc|login)(N) ${ZDOTDIR:-${HOM
 done
 
 # Download zimfw script
-local -r ztarget=${ZIM_HOME}/zimfw.zsh
+readonly ZTARGET=${ZIM_HOME}/zimfw.zsh
 if (
   command mkdir -p ${ZIM_HOME} || return 1
-  local -r zurl=https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
-  if (( ${+commands[curl]} )); then
-    command curl -fsSL -o ${ztarget} ${zurl} || return 1
-  elif (( ${+commands[wget]} )); then
-    command wget -nv -O ${ztarget} ${zurl} || return 1
+  readonly ZURL=https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+  if [[ ${+commands[curl]} -ne 0 && -x ${commands[curl]} ]]; then
+    command curl -fsSL -o ${ZTARGET} ${ZURL} || return 1
+  elif [[ ${+commands[wget]} -ne 0 && -x ${commands[wget]} ]]; then
+    command wget -nv -O ${ZTARGET} ${ZURL} || return 1
   else
     print -u2 -P '%F{red}x Either %Bcurl%b or %Bwget%b are required to download the Zim script.%f'
     return 1
   fi
 ); then
-  print -PR "%F{green})%f Downloaded the Zim script to %B${ztarget}%b"
+  print -PR "%F{green})%f Downloaded the Zim script to %B${ZTARGET}%b"
 else
   command rm -rf ${ZIM_HOME}
-  print -u2 -PR "%F{red}x Could not download the Zim script to %B${ztarget}%b%f"
+  print -u2 -PR "%F{red}x Could not download the Zim script to %B${ZTARGET}%b%f"
   return 1
 fi
 
 # Prepend templates
-if (( ! ${+commands[git]} )); then
-  print -PR '%F{green})%f Git not installed, setting degit as the default in your .zshrc file.'
+if [[ ${+commands[git]} -ne 0 && -x ${commands[git]} ]]; then
+  HAS_GIT=1
+else
+  HAS_GIT=0
+  print -PR '%F{green})%f Git not found, setting degit as the default in your .zshrc file.'
   # Also set degit as the defaul in the current shell session, used by the install step.
   zstyle ':zim:zmodule' use 'degit'
 fi
@@ -333,7 +336,7 @@ unset key
 for ZTEMPLATE in ${(k)ZTEMPLATES}; do
   USER_FILE=${${:-${ZDOTDIR:-${HOME}}/.${ZTEMPLATE}}:A}
   if ERR=$(command mv -f =(
-    if [[ ${ZTEMPLATE} == zshrc && ${+commands[git]} -eq 0 ]]; then
+    if [[ ${ZTEMPLATE} == zshrc && ${HAS_GIT} -eq 0 ]]; then
       print -R "${(F)${(@f)ZTEMPLATES[${ZTEMPLATE}]}/(#b)\#(zstyle*degit*)/$match[1]}"
     else
       print -R ${ZTEMPLATES[${ZTEMPLATE}]}
