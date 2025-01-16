@@ -139,14 +139,6 @@ else
 fi
 
 # Prepend templates
-if [[ ${+commands[git]} -ne 0 && -x ${commands[git]} ]]; then
-  HAS_GIT=1
-else
-  HAS_GIT=0
-  print -PR '%F{green})%f Git not found, setting degit as the default in your .zshrc file.'
-  # Also set degit as the defaul in the current shell session, used by the install step.
-  zstyle ':zim:zmodule' use 'degit'
-fi
 ZTEMPLATES[zimrc]="# Start configuration added by Zim install {{{
 #
 # This is not sourced during shell startup, and it's only used to configure the
@@ -310,7 +302,7 @@ if [[ ! -e \${ZIM_HOME}/zimfw.zsh ]]; then
   fi
 fi
 # Install missing modules, and update \${ZIM_HOME}/init.zsh if missing or outdated.
-if [[ ! \${ZIM_HOME}/init.zsh -nt \${ZDOTDIR:-\${HOME}}/.zimrc ]]; then
+if [[ ! \${ZIM_HOME}/init.zsh -nt \${ZIM_CONFIG_FILE:-\${ZDOTDIR:-\${HOME}}/.zimrc} ]]; then
   source \${ZIM_HOME}/zimfw.zsh init -q
 fi
 # Initialize modules.
@@ -336,11 +328,7 @@ unset key
 for ZTEMPLATE in ${(k)ZTEMPLATES}; do
   USER_FILE=${${:-${ZDOTDIR:-${HOME}}/.${ZTEMPLATE}}:A}
   if ERR=$(command mv -f =(
-    if [[ ${ZTEMPLATE} == zshrc && ${HAS_GIT} -eq 0 ]]; then
-      print -R "${(F)${(@f)ZTEMPLATES[${ZTEMPLATE}]}/(#b)\#(zstyle*degit*)/$match[1]}"
-    else
-      print -R ${ZTEMPLATES[${ZTEMPLATE}]}
-    fi
+    print -R ${ZTEMPLATES[${ZTEMPLATE}]}
     if [[ -e ${USER_FILE} ]] cat ${USER_FILE}
   ) ${USER_FILE} 2>&1); then
     print -PR "%F{green})%f Prepended Zim template to %B${USER_FILE}%b"
