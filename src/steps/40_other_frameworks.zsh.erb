@@ -1,7 +1,7 @@
 # Check if other frameworks are enabled
 for ZDOTFILE in /etc/(zsh/)#(z|.z)(shenv|profile|shrc|login)(N) <%= home %>/.z(shenv|profile|shrc|login)(N); do
   if grep -Eq "^[^#]*(\\bsource|\\.).*(${ZIM_HOME:t}|\\\$[{]?ZIM_HOME[}]?)/init.zsh\\b" ${ZDOTFILE}; then
-    print -u2 -P "%F{red}<%= error %>You seem to have Zim already installed in %B${ZDOTFILE}%b. Please uninstall it first.%f"
+    print -u2 -P "%F{red}<%= error %>You seem to have Zim Framework already installed in %B${ZDOTFILE}%b. Please uninstall it first.%f"
     return 1
   fi
   if grep -Eq '^[^#]*(\bsource|\.).*prezto/init.zsh\b' ${ZDOTFILE}; then
@@ -26,9 +26,9 @@ for ZDOTFILE in /etc/(zsh/)#(z|.z)(shenv|profile|shrc|login)(N) <%= home %>/.z(s
     print -u2 -P "%F{yellow}<%= warn %>You seem to have grml installed in %B${ZDOTFILE}%b. Please uninstall it.%f"
   fi
   if grep -Eq '^[^#]*\bcompinit\b' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}<%= warn%>You seem to be already calling %Bcompinit%b in %B${ZDOTFILE}%b. Please remove it, because Zim's completion module will call %Bcompinit%b for you.%f"
+    print -u2 -P "%F{yellow}<%= warn%>You seem to be already calling %Bcompinit%b in %B${ZDOTFILE}%b. Please remove it, because Zim Framework's completion module will call %Bcompinit%b for you.%f"
   fi
   if grep -Eq '^[^#]*\bpromptinit\b' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}<%= warn%>You seem to be calling %Bpromptinit%b in %B${ZDOTFILE}%b. Please remove it, because Zim already has a prompt theme for you that does not require %Bpromptinit%b.%f"
+    print -u2 -P "%F{yellow}<%= warn%>You seem to be calling %Bpromptinit%b in %B${ZDOTFILE}%b. Please remove it, because Zim Framework already has a prompt theme for you that does not require %Bpromptinit%b.%f"
   fi
 done

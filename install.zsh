@@ -65,7 +65,7 @@ if [[ -e ${ZIM_HOME} ]]; then
   if [[ -n ${ZIM_HOME}(#qN/^F) ]]; then
     print -P '%F{green})%f ZIM_HOME already exists, but is empty.'
   else
-    print -u2 -PR "%F{red}x %B${ZIM_HOME}%b already exists. Please set ZIM_HOME to the path where you want to install Zim.%f"
+    print -u2 -PR "%F{red}x %B${ZIM_HOME}%b already exists. Please set ZIM_HOME to the path where you want to install Zim Framework.%f"
     return 1
   fi
 fi
@@ -85,7 +85,7 @@ fi
 # Check if other frameworks are enabled
 for ZDOTFILE in /etc/(zsh/)#(z|.z)(shenv|profile|shrc|login)(N) ${ZDOTDIR:-${HOME}}/.z(shenv|profile|shrc|login)(N); do
   if grep -Eq "^[^#]*(\\bsource|\\.).*(${ZIM_HOME:t}|\\\$[{]?ZIM_HOME[}]?)/init.zsh\\b" ${ZDOTFILE}; then
-    print -u2 -P "%F{red}x You seem to have Zim already installed in %B${ZDOTFILE}%b. Please uninstall it first.%f"
+    print -u2 -P "%F{red}x You seem to have Zim Framework already installed in %B${ZDOTFILE}%b. Please uninstall it first.%f"
     return 1
   fi
   if grep -Eq '^[^#]*(\bsource|\.).*prezto/init.zsh\b' ${ZDOTFILE}; then
@@ -110,10 +110,10 @@ for ZDOTFILE in /etc/(zsh/)#(z|.z)(shenv|profile|shrc|login)(N) ${ZDOTDIR:-${HOM
     print -u2 -P "%F{yellow}! You seem to have grml installed in %B${ZDOTFILE}%b. Please uninstall it.%f"
   fi
   if grep -Eq '^[^#]*\bcompinit\b' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}! You seem to be already calling %Bcompinit%b in %B${ZDOTFILE}%b. Please remove it, because Zim's completion module will call %Bcompinit%b for you.%f"
+    print -u2 -P "%F{yellow}! You seem to be already calling %Bcompinit%b in %B${ZDOTFILE}%b. Please remove it, because Zim Framework's completion module will call %Bcompinit%b for you.%f"
   fi
   if grep -Eq '^[^#]*\bpromptinit\b' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}! You seem to be calling %Bpromptinit%b in %B${ZDOTFILE}%b. Please remove it, because Zim already has a prompt theme for you that does not require %Bpromptinit%b.%f"
+    print -u2 -P "%F{yellow}! You seem to be calling %Bpromptinit%b in %B${ZDOTFILE}%b. Please remove it, because Zim Framework already has a prompt theme for you that does not require %Bpromptinit%b.%f"
   fi
 done
 
@@ -127,22 +127,21 @@ if (
   elif [[ ${+commands[wget]} -ne 0 && -x ${commands[wget]} ]]; then
     command wget -nv -O ${ZTARGET} ${ZURL} || return 1
   else
-    print -u2 -P '%F{red}x Either %Bcurl%b or %Bwget%b are required to download the Zim script.%f'
+    print -u2 -P '%F{red}x Either %Bcurl%b or %Bwget%b are required to download the Zim Framework script.%f'
     return 1
   fi
 ); then
-  print -PR "%F{green})%f Downloaded the Zim script to %B${ZTARGET}%b"
+  print -PR "%F{green})%f Downloaded the Zim Framework script to %B${ZTARGET}%b"
 else
   command rm -rf ${ZIM_HOME}
-  print -u2 -PR "%F{red}x Could not download the Zim script to %B${ZTARGET}%b%f"
+  print -u2 -PR "%F{red}x Could not download the Zim Framework script to %B${ZTARGET}%b%f"
   return 1
 fi
 
 # Prepend templates
-ZTEMPLATES[zimrc]="# Start configuration added by Zim install {{{
+ZTEMPLATES[zimrc]="# Start configuration added by Zim Framework install {{{
 #
-# This is not sourced during shell startup, and it's only used to configure the
-# zimfw plugin manager.
+# This is not sourced during shell startup and is only used to configure zimfw.
 #
 
 #
@@ -164,9 +163,9 @@ zmodule utility
 # Prompt
 #
 
-# Exposes to prompts how long the last command took to execute, used by asciiship.
+# Exposes how long the last command took to run to prompts.
 zmodule duration-info
-# Exposes git repository status information to prompts, used by asciiship.
+# Exposes git repository status information to prompts.
 zmodule git-info
 # A heavily reduced, ASCII-only version of the Spaceship and Starship prompts.
 zmodule asciiship
@@ -177,25 +176,23 @@ zmodule asciiship
 
 # Additional completion definitions for Zsh.
 zmodule zsh-users/zsh-completions --fpath src
-# Enables and configures smart and extensive tab completion.
-# completion must be sourced after all modules that add completion definitions.
+# Enables and configures smart and extensive tab completion, must be sourced
+# after all modules that add completion definitions.
 zmodule completion
 
 #
 # Modules that must be initialized last
 #
 
-# Fish-like syntax highlighting for Zsh.
-# zsh-users/zsh-syntax-highlighting must be sourced after completion
+# Fish-like syntax highlighting for Zsh, must be sourced after completion.
 zmodule zsh-users/zsh-syntax-highlighting
-# Fish-like history search (up arrow) for Zsh.
-# zsh-users/zsh-history-substring-search must be sourced after zsh-users/zsh-syntax-highlighting
+# Fish-like history search for Zsh, must be sourced after zsh-users/zsh-syntax-highlighting.
 zmodule zsh-users/zsh-history-substring-search
 # Fish-like autosuggestions for Zsh.
 zmodule zsh-users/zsh-autosuggestions
-# }}} End configuration added by Zim install
+# }}} End configuration added by Zim Framework install
 "
-ZTEMPLATES[zshrc]="# Start configuration added by Zim install {{{
+ZTEMPLATES[zshrc]="# Start configuration added by Zim Framework install {{{
 #
 # User configuration sourced by interactive shells
 #
@@ -227,9 +224,9 @@ bindkey -e
 # Remove path separator from WORDCHARS.
 WORDCHARS=\${WORDCHARS//[\\/]}
 
-# -----------------
-# Zim configuration
-# -----------------
+# -------------------
+# zimfw configuration
+# -------------------
 
 # Use degit instead of git as the default tool to install and update modules.
 #zstyle ':zim:zmodule' use 'degit'
@@ -323,7 +320,7 @@ for key ('^[[B' '^N' \${terminfo[kcud1]}) bindkey \${key} history-substring-sear
 for key ('k') bindkey -M vicmd \${key} history-substring-search-up
 for key ('j') bindkey -M vicmd \${key} history-substring-search-down
 unset key
-# }}} End configuration added by Zim install
+# }}} End configuration added by Zim Framework install
 "
 for ZTEMPLATE in ${(k)ZTEMPLATES}; do
   USER_FILE=${${:-${ZDOTDIR:-${HOME}}/.${ZTEMPLATE}}:A}
@@ -331,9 +328,9 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
     print -R ${ZTEMPLATES[${ZTEMPLATE}]}
     if [[ -e ${USER_FILE} ]] cat ${USER_FILE}
   ) ${USER_FILE} 2>&1); then
-    print -PR "%F{green})%f Prepended Zim template to %B${USER_FILE}%b"
+    print -PR "%F{green})%f Prepended Zim Framework template to %B${USER_FILE}%b"
   else
-    print -u2 -PlR "%F{red}x Error prepending Zim template to %B${USER_FILE}%b%f" ${ERR}
+    print -u2 -PlR "%F{red}x Error prepending Zim Framework template to %B${USER_FILE}%b%f" ${ERR}
     return 1
   fi
 done
