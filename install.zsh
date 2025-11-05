@@ -3,7 +3,7 @@
 
 # MIT License
 #
-# Copyright (c) 2019-2022 Eric Nielsen and contributors
+# Copyright (c) 2019-2025 Eric Nielsen and contributors
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -159,6 +159,9 @@ zmodule termtitle
 # Utility aliases and functions. Adds colour to ls, grep and less.
 zmodule utility
 
+# <-- Normally new modules should be added here. Check each module documentation
+# for any caveats.
+
 #
 # Prompt
 #
@@ -186,9 +189,12 @@ zmodule completion
 
 # Fish-like syntax highlighting for Zsh, must be sourced after completion.
 zmodule zsh-users/zsh-syntax-highlighting
-# Fish-like history search for Zsh, must be sourced after zsh-users/zsh-syntax-highlighting.
+# Fish-like history search for Zsh, must be sourced after
+# zsh-users/zsh-syntax-highlighting. Bind keyboard shortcuts in your ~/.zshrc:
+# https://github.com/zsh-users/zsh-history-substring-search/blob/master/README.md#usage
 zmodule zsh-users/zsh-history-substring-search
-# Fish-like autosuggestions for Zsh.
+# Fish-like autosuggestions for Zsh. Add the following to your ~/.zshrc to boost
+# performance: ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 zmodule zsh-users/zsh-autosuggestions
 # }}} End configuration added by Zim Framework install
 "
@@ -223,13 +229,6 @@ bindkey -e
 
 # Remove path separator from WORDCHARS.
 WORDCHARS=\${WORDCHARS//[\\/]}
-
-# -------------------
-# zimfw configuration
-# -------------------
-
-# Use degit instead of git as the default tool to install and update modules.
-#zstyle ':zim:zmodule' use 'degit'
 
 # --------------------
 # Module configuration
