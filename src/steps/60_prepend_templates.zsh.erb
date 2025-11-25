@@ -6,9 +6,9 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
     print -R ${ZTEMPLATES[${ZTEMPLATE}]}
     if [[ -e ${USER_FILE} ]] cat ${USER_FILE}
   ) ${USER_FILE} 2>&1); then
-    print -PR "<%= okay %>Prepended Zim Framework template to %B${USER_FILE}%b"
+    print -R "${ZOKAY}Prepended Zim Framework template to ${ZBOLD}${USER_FILE}${ZNORMAL}"
   else
-    print -u2 -PlR "%F{red}<%= error %>Error prepending Zim Framework template to %B${USER_FILE}%b%f" ${ERR}
+    print -u2 -lR "${ZERROR}Error prepending Zim Framework template to ${ZBOLD}${USER_FILE}${ZNORMAL}" ${ERR}
     return 1
   fi
 done

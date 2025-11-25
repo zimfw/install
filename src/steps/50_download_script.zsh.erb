@@ -8,13 +8,13 @@ if (
   elif [[ ${+commands[wget]} -ne 0 && -x ${commands[wget]} ]]; then
     command wget -nv -O ${ZTARGET} ${ZURL} || return 1
   else
-    print -u2 -P '%F{red}<%= error %>Either %Bcurl%b or %Bwget%b are required to download the Zim Framework script.%f'
+    print -u2 "${ZERROR}Either ${ZBOLD}curl${ZNORMALRED} or ${ZBOLD}wget${ZNORMALRED} are required to download Zim Framework script.${ZNORMAL}"
     return 1
   fi
 ); then
-  print -PR "<%= okay %>Downloaded the Zim Framework script to %B${ZTARGET}%b"
+  print -R "${ZOKAY}Downloaded Zim Framework script to ${ZBOLD}${ZTARGET}${ZNORMAL}"
 else
   command rm -rf ${ZIM_HOME}
-  print -u2 -PR "%F{red}<%= error %>Could not download the Zim Framework script to %B${ZTARGET}%b%f"
+  print -u2 -R "${ZERROR}Could not download Zim Framework script to ${ZBOLD}${ZTARGET}${ZNORMALRED}${ZNORMAL}"
   return 1
 fi

@@ -15,6 +15,19 @@ _replace_home() {
   fi
 }
 
+if [[ -z ${NO_COLOR} && -t 1 ]]; then
+  readonly ZNORMAL=$'\E[0m' ZBOLD=$'\E[1m' ZRED=$'\E[31m' ZNORMALRED=$'\E[0;31m' ZGREEN=$'\E[32m' ZYELLOW=$'\E[33m' ZNORMALYELLOW=$'\E[0;33m'
+else
+  readonly ZNORMAL= ZBOLD= ZRED= ZNORMALRED= ZGREEN= ZYELLOW= ZNORMALYELLOW=
+fi
+readonly ZERROR="${ZRED}<%= error %>" ZOKAY="${ZGREEN}<%= okay %>${ZNORMAL}" ZWARN="${ZYELLOW}<%= warn %>"
 typeset -A ZTEMPLATES
-readonly CLEAR_LINE=$'\E[2K\r'
 ZIM_HOME_STR='<%= home %>/.zim'
+
+print "${ZBOLD},_____________  ,___________${ZNORMAL}
+${ZBOLD}|__, | | , , |  | ,__| | | |${ZNORMAL}
+${ZBOLD}  / /| | | | |${ZRED}()${ZNORMAL}${ZBOLD}| |__| | | |${ZNORMAL}
+${ZBOLD} / / |-| | | |  | ,_|| | | |${ZNORMAL}
+${ZBOLD}/ /__| | | | |${ZRED}()${ZNORMAL}${ZBOLD}| |  | | | |${ZNORMAL}
+${ZBOLD};____|_|_|_|_|  |_|  |_____|${ZNORMAL}
+"

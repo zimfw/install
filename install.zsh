@@ -40,80 +40,93 @@ _replace_home() {
   fi
 }
 
+if [[ -z ${NO_COLOR} && -t 1 ]]; then
+  readonly ZNORMAL=$'\E[0m' ZBOLD=$'\E[1m' ZRED=$'\E[31m' ZNORMALRED=$'\E[0;31m' ZGREEN=$'\E[32m' ZYELLOW=$'\E[33m' ZNORMALYELLOW=$'\E[0;33m'
+else
+  readonly ZNORMAL= ZBOLD= ZRED= ZNORMALRED= ZGREEN= ZYELLOW= ZNORMALYELLOW=
+fi
+readonly ZERROR="${ZRED}x " ZOKAY="${ZGREEN}) ${ZNORMAL}" ZWARN="${ZYELLOW}! "
 typeset -A ZTEMPLATES
-readonly CLEAR_LINE=$'\E[2K\r'
 ZIM_HOME_STR='${ZDOTDIR:-${HOME}}/.zim'
+
+print "${ZBOLD},_____________  ,___________${ZNORMAL}
+${ZBOLD}|__, | | , , |  | ,__| | | |${ZNORMAL}
+${ZBOLD}  / /| | | | |${ZRED}()${ZNORMAL}${ZBOLD}| |__| | | |${ZNORMAL}
+${ZBOLD} / / |-| | | |  | ,_|| | | |${ZNORMAL}
+${ZBOLD}/ /__| | | | |${ZRED}()${ZNORMAL}${ZBOLD}| |  | | | |${ZNORMAL}
+${ZBOLD};____|_|_|_|_|  |_|  |_____|${ZNORMAL}
+"
 
 # Check Zsh version
 autoload -Uz is-at-least && if ! is-at-least 5.2; then
-  print -u2 -PR "%F{red}x You're using Zsh version ${ZSH_VERSION} and versions < 5.2 are not supported. Please update your Zsh.%f"
+  print -u2 -R "${ZERROR}You're using Zsh version ${ZSH_VERSION} and versions < 5.2 are not supported. Please update your Zsh.${ZNORMAL}"
   return 1
 fi
-print -PR "%F{green})%f Using Zsh version ${ZSH_VERSION}"
+print -R "${ZOKAY}Using Zsh version ${ZSH_VERSION}"
 
 # Check ZIM_HOME
 if (( ! ${+ZIM_HOME} )); then
-  print -P '%F{green})%f ZIM_HOME not set, using the default one.'
+  print ${ZOKAY}'ZIM_HOME not set, using the default one.'
   ZIM_HOME=${(e)ZIM_HOME_STR}
 elif [[ ${ZIM_HOME} == ${(e)ZIM_HOME_STR} ]]; then
-  print -P '%F{green})%f Your ZIM_HOME is the default one.'
+  print ${ZOKAY}'Your ZIM_HOME is the default one.'
 else
   ZIM_HOME_STR=$(_replace_home ${ZIM_HOME})
-  print -PR "%F{green})%f Your ZIM_HOME is customized to %B${ZIM_HOME_STR}%b"
+  print -R "${ZOKAY}Your ZIM_HOME is customized to ${ZBOLD}${ZIM_HOME_STR}${ZNORMAL}"
 fi
 if [[ -e ${ZIM_HOME} ]]; then
   if [[ -n ${ZIM_HOME}(#qN/^F) ]]; then
-    print -P '%F{green})%f ZIM_HOME already exists, but is empty.'
+    print ${ZOKAY}'ZIM_HOME already exists, but is empty.'
   else
-    print -u2 -PR "%F{red}x %B${ZIM_HOME}%b already exists. Please set ZIM_HOME to the path where you want to install Zim Framework.%f"
+    print -u2 -R "${ZERROR}${ZBOLD}${ZIM_HOME}${ZNORMALRED} already exists. Please set ZIM_HOME to the path where you want to install Zim Framework.${ZNORMAL}"
     return 1
   fi
 fi
 
 # Check if Zsh is the default shell
 if [[ ${SHELL:t} == zsh ]]; then
-  print -P '%F{green})%f Zsh is your default shell.'
+  print ${ZOKAY}'Zsh is your default shell.'
 else
   readonly ZPATH==zsh
   if command chsh -s ${ZPATH}; then
-    print -PR "%F{green})%f Changed your default shell to %B${ZPATH}%b"
+    print -R "${ZOKAY}Changed your default shell to ${ZBOLD}${ZPATH}${ZNORMAL}"
   else
-    print -u2 -PR "%F{yellow}! Could not change your default shell to %B${ZPATH}%b. Please manually change it later.%f"
+    print -u2 -R "${ZWARN}Could not change your default shell to ${ZBOLD}${ZPATH}${ZNORMALYELLOW}. Please manually change it later.${ZNORMAL}"
   fi
 fi
 
 # Check if other frameworks are enabled
 for ZDOTFILE in /etc/(zsh/)#(z|.z)(shenv|profile|shrc|login)(N) ${ZDOTDIR:-${HOME}}/.z(shenv|profile|shrc|login)(N); do
   if grep -Eq "^[^#]*(\\bsource|\\.).*(${ZIM_HOME:t}|\\\$[{]?ZIM_HOME[}]?)/init.zsh\\b" ${ZDOTFILE}; then
-    print -u2 -P "%F{red}x You seem to have Zim Framework already installed in %B${ZDOTFILE}%b. Please uninstall it first.%f"
+    print -u2 "${ZERROR}You seem to have Zim Framework already installed in ${ZBOLD}${ZDOTFILE}${ZNORMALRED}. Please uninstall it first.${ZNORMAL}"
     return 1
   fi
   if grep -Eq '^[^#]*(\bsource|\.).*prezto/init.zsh\b' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}! You seem to have prezto enabled in %B${ZDOTFILE}%b. Please disable it.%f"
+    print -u2 "${ZWARN}You seem to have prezto enabled in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*(\bsource|\.).*/oh-my-zsh.sh\b' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}! You seem to have oh-my-zsh enabled in %B${ZDOTFILE}%b. Please disable it.%f"
+    print -u2 "${ZWARN}You seem to have oh-my-zsh enabled in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*\bantibody\s+bundle\b' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}! You seem to have antibody enabled in %B${ZDOTFILE}%b. Please disable it.%f"
+    print -u2 "${ZWARN}You seem to have antibody enabled in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*\bantigen\s+apply\b' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}! You seem to have antigen enabled in %B${ZDOTFILE}%b. Please disable it.%f"
+    print -u2 "${ZWARN}You seem to have antigen enabled in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*(\bsource|\.).*/zgen.zsh\b' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}! You seem to have zgen enabled in %B${ZDOTFILE}%b. Please disable it.%f"
+    print -u2 "${ZWARN}You seem to have zgen enabled in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*\bzplug\s+load\b' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}! You seem to have zplug enabled in %B${ZDOTFILE}%b. Please disable it.%f"
+    print -u2 "${ZWARN}You seem to have zplug enabled in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*\b(function\s+grml_vcs_info_toggle_colour\b|grml_vcs_info_toggle_colour\s*\(\s*\))' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}! You seem to have grml installed in %B${ZDOTFILE}%b. Please uninstall it.%f"
+    print -u2 "${ZWARN}You seem to have grml installed in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please uninstall it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*\bcompinit\b' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}! You seem to be already calling %Bcompinit%b in %B${ZDOTFILE}%b. Please remove it, because Zim Framework's completion module will call %Bcompinit%b for you.%f"
+    print -u2 "${ZWARN}You seem to be already calling ${ZBOLD}compinit${ZNORMALYELLOW} in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please remove it, because Zim Framework's completion module will call ${ZBOLD}compinit${ZNORMALYELLOW} for you.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*\bpromptinit\b' ${ZDOTFILE}; then
-    print -u2 -P "%F{yellow}! You seem to be calling %Bpromptinit%b in %B${ZDOTFILE}%b. Please remove it, because Zim Framework already has a prompt theme for you that does not require %Bpromptinit%b.%f"
+    print -u2 "${ZWARN}You seem to be calling ${ZBOLD}promptinit${ZNORMALYELLOW} in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please remove it, because Zim Framework already has a prompt theme for you that does not require ${ZBOLD}promptinit${ZNORMALYELLOW}.${ZNORMAL}"
   fi
 done
 
@@ -127,14 +140,14 @@ if (
   elif [[ ${+commands[wget]} -ne 0 && -x ${commands[wget]} ]]; then
     command wget -nv -O ${ZTARGET} ${ZURL} || return 1
   else
-    print -u2 -P '%F{red}x Either %Bcurl%b or %Bwget%b are required to download the Zim Framework script.%f'
+    print -u2 "${ZERROR}Either ${ZBOLD}curl${ZNORMALRED} or ${ZBOLD}wget${ZNORMALRED} are required to download Zim Framework script.${ZNORMAL}"
     return 1
   fi
 ); then
-  print -PR "%F{green})%f Downloaded the Zim Framework script to %B${ZTARGET}%b"
+  print -R "${ZOKAY}Downloaded Zim Framework script to ${ZBOLD}${ZTARGET}${ZNORMAL}"
 else
   command rm -rf ${ZIM_HOME}
-  print -u2 -PR "%F{red}x Could not download the Zim Framework script to %B${ZTARGET}%b%f"
+  print -u2 -R "${ZERROR}Could not download Zim Framework script to ${ZBOLD}${ZTARGET}${ZNORMALRED}${ZNORMAL}"
   return 1
 fi
 
@@ -327,20 +340,19 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
     print -R ${ZTEMPLATES[${ZTEMPLATE}]}
     if [[ -e ${USER_FILE} ]] cat ${USER_FILE}
   ) ${USER_FILE} 2>&1); then
-    print -PR "%F{green})%f Prepended Zim Framework template to %B${USER_FILE}%b"
+    print -R "${ZOKAY}Prepended Zim Framework template to ${ZBOLD}${USER_FILE}${ZNORMAL}"
   else
-    print -u2 -PlR "%F{red}x Error prepending Zim Framework template to %B${USER_FILE}%b%f" ${ERR}
+    print -u2 -lR "${ZERROR}Error prepending Zim Framework template to ${ZBOLD}${USER_FILE}${ZNORMAL}" ${ERR}
     return 1
   fi
 done
 
-print -n 'Installing modules ...'
 if ERR=$(source ${ZIM_HOME}/zimfw.zsh init -q 2>&1); then
-  print -P ${CLEAR_LINE}'%F{green})%f Installed modules.'
+  print ${ZOKAY}'Installed modules.'
 else
-  print -u2 -PlR "${CLEAR_LINE}${ERR}" '%F{red}x Could not install modules.%f'
+  print -u2 -lR ${ERR} "${ZERROR}Could not install modules.${ZNORMAL}"
   return 1
 fi
 
-print -P ${CLEAR_LINE}'All done. Enjoy your Zsh IMproved! Restart your terminal for changes to take effect.'
+print 'All done. Enjoy your Zsh IMproved! Restart your terminal for changes to take effect.'
 
