@@ -1,34 +1,34 @@
 # Check if other frameworks are enabled
 for ZDOTFILE in /etc/(zsh/)#(z|.z)(shenv|profile|shrc|login)(N) <%= home %>/.z(shenv|profile|shrc|login)(N); do
   if grep -Eq "^[^#]*(\\bsource|\\.).*(${ZIM_HOME:t}|\\\$[{]?ZIM_HOME[}]?)/init.zsh\\b" ${ZDOTFILE}; then
-    print -u2 "${ZERROR}You seem to have Zim Framework already installed in ${ZBOLD}${ZDOTFILE}${ZNORMALRED}. Please uninstall it first.${ZNORMAL}"
+    print -u2 "${ZERROR}You seem to have Zim Framework already installed in ${ZBOLD}${(Dq+)ZDOTFILE}${ZNORMALRED}. Please uninstall it first.${ZNORMAL}"
     return 1
   fi
   if grep -Eq '^[^#]*(\bsource|\.).*prezto/init.zsh\b' ${ZDOTFILE}; then
-    print -u2 "${ZWARN}You seem to have prezto enabled in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
+    print -u2 "${ZWARN}You seem to have prezto enabled in ${ZBOLD}${(Dq+)ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*(\bsource|\.).*/oh-my-zsh.sh\b' ${ZDOTFILE}; then
-    print -u2 "${ZWARN}You seem to have oh-my-zsh enabled in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
+    print -u2 "${ZWARN}You seem to have oh-my-zsh enabled in ${ZBOLD}${(Dq+)ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*\bantibody\s+bundle\b' ${ZDOTFILE}; then
-    print -u2 "${ZWARN}You seem to have antibody enabled in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
+    print -u2 "${ZWARN}You seem to have antibody enabled in ${ZBOLD}${(Dq+)ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*\bantigen\s+apply\b' ${ZDOTFILE}; then
-    print -u2 "${ZWARN}You seem to have antigen enabled in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
+    print -u2 "${ZWARN}You seem to have antigen enabled in ${ZBOLD}${(Dq+)ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*(\bsource|\.).*/zgen.zsh\b' ${ZDOTFILE}; then
-    print -u2 "${ZWARN}You seem to have zgen enabled in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
+    print -u2 "${ZWARN}You seem to have zgen enabled in ${ZBOLD}${(Dq+)ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*\bzplug\s+load\b' ${ZDOTFILE}; then
-    print -u2 "${ZWARN}You seem to have zplug enabled in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
+    print -u2 "${ZWARN}You seem to have zplug enabled in ${ZBOLD}${(Dq+)ZDOTFILE}${ZNORMALYELLOW}. Please disable it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*\b(function\s+grml_vcs_info_toggle_colour\b|grml_vcs_info_toggle_colour\s*\(\s*\))' ${ZDOTFILE}; then
-    print -u2 "${ZWARN}You seem to have grml installed in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please uninstall it.${ZNORMAL}"
+    print -u2 "${ZWARN}You seem to have grml installed in ${ZBOLD}${(Dq+)ZDOTFILE}${ZNORMALYELLOW}. Please uninstall it.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*\bcompinit\b' ${ZDOTFILE}; then
-    print -u2 "${ZWARN}You seem to be already calling ${ZBOLD}compinit${ZNORMALYELLOW} in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please remove it, because Zim Framework's completion module will call ${ZBOLD}compinit${ZNORMALYELLOW} for you.${ZNORMAL}"
+    print -u2 "${ZWARN}You seem to be already calling ${ZBOLD}compinit${ZNORMALYELLOW} in ${ZBOLD}${(Dq+)ZDOTFILE}${ZNORMALYELLOW}. Please remove it, because Zim Framework's completion module will call ${ZBOLD}compinit${ZNORMALYELLOW} for you.${ZNORMAL}"
   fi
   if grep -Eq '^[^#]*\bpromptinit\b' ${ZDOTFILE}; then
-    print -u2 "${ZWARN}You seem to be calling ${ZBOLD}promptinit${ZNORMALYELLOW} in ${ZBOLD}${ZDOTFILE}${ZNORMALYELLOW}. Please remove it, because Zim Framework already has a prompt theme for you that does not require ${ZBOLD}promptinit${ZNORMALYELLOW}.${ZNORMAL}"
+    print -u2 "${ZWARN}You seem to be calling ${ZBOLD}promptinit${ZNORMALYELLOW} in ${ZBOLD}${(Dq+)ZDOTFILE}${ZNORMALYELLOW}. Please remove it, because Zim Framework already has a prompt theme for you that does not require ${ZBOLD}promptinit${ZNORMALYELLOW}.${ZNORMAL}"
   fi
 done

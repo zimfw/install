@@ -12,7 +12,7 @@ if [[ -e ${ZIM_HOME} ]]; then
   if [[ -n ${ZIM_HOME}(#qN/^F) ]]; then
     print ${ZOKAY}'ZIM_HOME already exists, but is empty.'
   else
-    print -u2 -R "${ZERROR}${ZBOLD}${ZIM_HOME}${ZNORMALRED} already exists. Please set ZIM_HOME to the path where you want to install Zim Framework.${ZNORMAL}"
+    print -u2 -R "${ZERROR}${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMALRED} already exists. Please set ZIM_HOME to the path where you want to install Zim Framework.${ZNORMAL}"
     return 1
   fi
 fi

@@ -12,9 +12,9 @@ if (
     return 1
   fi
 ); then
-  print -R "${ZOKAY}Downloaded Zim Framework script to ${ZBOLD}${ZTARGET}${ZNORMAL}"
+  print -R "${ZOKAY}Downloaded Zim Framework script to ${ZBOLD}${(Dq+)ZTARGET}${ZNORMAL}"
 else
   command rm -rf ${ZIM_HOME}
-  print -u2 -R "${ZERROR}Could not download Zim Framework script to ${ZBOLD}${ZTARGET}${ZNORMALRED}${ZNORMAL}"
+  print -u2 -R "${ZERROR}Could not download Zim Framework script to ${ZBOLD}${(Dq+)ZTARGET}${ZNORMALRED}${ZNORMAL}"
   return 1
 fi
