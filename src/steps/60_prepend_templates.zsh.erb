@@ -1,5 +1,5 @@
 # Prepend templates
-<%= render_templates("src/templates/*") %>
+<%= render_templates("src/templates/zshrc") %>
 for ZTEMPLATE in ${(k)ZTEMPLATES}; do
   USER_FILE=${${:-<%= home %>/.${ZTEMPLATE}}:A}
   OLD_USER_FILE=${USER_FILE}.pre-zim
