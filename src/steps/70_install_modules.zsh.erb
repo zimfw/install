@@ -1,6 +1,6 @@
-if ERR=$(source ${ZIM_HOME}/zimfw.zsh init -q 2>&1); then
+if source ${ZIM_HOME}/zimfw.zsh init -q; then
   print ${ZOKAY}'Installed modules.'
 else
-  print -u2 -lR ${ERR} "${ZERROR}Could not install modules.${ZNORMAL}"
+  print -u2 -R "${ZERROR}Could not install modules.${ZNORMAL}"
   return 1
 fi

@@ -8,23 +8,23 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
       print -u2 "${ZWARN}Existing backup found in ${ZBOLD}${(Dq+)OLD_USER_FILE}${ZNORMAL}"
       OLD_USER_FILE=${USER_FILE}.pre-zim-${(%):-%D{%Y%m%dT%H%M%S.%.}}
     done
-    if ERR=$(command mv -f ${USER_FILE} ${OLD_USER_FILE} 2>&1); then
+    if command mv -f ${USER_FILE} ${OLD_USER_FILE}; then
       print -R "${ZOKAY}Backed up existing file to ${ZBOLD}${(Dq+)OLD_USER_FILE}${ZNORMAL}"
     else
-      print -u2 -lR "${ZERROR}Error backing up existing file to ${ZBOLD}${(Dq+)OLD_USER_FILE}${ZNORMAL}" ${ERR}
+      print -u2 -R "${ZERROR}Error backing up existing file to ${ZBOLD}${(Dq+)OLD_USER_FILE}${ZNORMAL}"
       return 1
     fi
-    if ERR=$(print -R ${ZTEMPLATES[${ZTEMPLATE}]} | cat - ${OLD_USER_FILE} > ${USER_FILE} 2>&1); then
+    if print -R ${ZTEMPLATES[${ZTEMPLATE}]} | cat - ${OLD_USER_FILE} > ${USER_FILE}; then
       print -R "${ZOKAY}Prepended Zim Framework template to ${ZBOLD}${(Dq+)USER_FILE}${ZNORMAL}"
     else
-      print -u2 -lR "${ZERROR}Error prepending Zim Framework template to ${ZBOLD}${(Dq+)USER_FILE}${ZNORMAL}" ${ERR}
+      print -u2 -R "${ZERROR}Error prepending Zim Framework template to ${ZBOLD}${(Dq+)USER_FILE}${ZNORMAL}"
       return 1
     fi
   else
-    if ERR=$(print -Rn ${ZTEMPLATES[${ZTEMPLATE}]} > ${USER_FILE} 2>&1); then
+    if print -Rn ${ZTEMPLATES[${ZTEMPLATE}]} > ${USER_FILE}; then
       print -R "${ZOKAY}Copied Zim Framework template to ${ZBOLD}${(Dq+)USER_FILE}${ZNORMAL}"
     else
-      print -u2 -lR "${ZERROR}Error copying Zim Framework template to ${ZBOLD}${(Dq+)USER_FILE}${ZNORMAL}" ${ERR}
+      print -u2 -R "${ZERROR}Error copying Zim Framework template to ${ZBOLD}${(Dq+)USER_FILE}${ZNORMAL}"
       return 1
     fi
   fi

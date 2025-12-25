@@ -79,18 +79,18 @@ fi
 # Check ZIM_HOME
 if (( ! ${+ZIM_HOME} )); then
   ZIM_HOME=${(e)ZIM_HOME_STR}
-  print "${ZOKAY}ZIM_HOME not set, using the default: ${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMAL}"
+  print "${ZOKAY}ZIM_HOME not set, using the default ${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMAL}"
 elif [[ ${ZIM_HOME} == ${(e)ZIM_HOME_STR} ]]; then
-  print "${ZOKAY}Your ZIM_HOME is the default: ${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMAL}"
+  print "${ZOKAY}Your ZIM_HOME is the default ${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMAL}"
 else
   ZIM_HOME_STR=$(_replace_home ${ZIM_HOME})
   print -R "${ZOKAY}Your ZIM_HOME is customized to ${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMAL}"
 fi
 if [[ -e ${ZIM_HOME} ]]; then
   if [[ -n ${ZIM_HOME}(#qN/^F) ]]; then
-    print "${ZOKAY}ZIM_HOME already exists, but is empty: ${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMAL}"
+    print -u2 "${ZWARN}${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMALYELLOW} already exists, but is empty."
   else
-    print -u2 -R "${ZERROR}ZIM_HOME already exists: ${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMALRED}. Please set ZIM_HOME to the path where you want to install Zim Framework.${ZNORMAL}"
+    print -u2 -R "${ZERROR}${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMALRED} already exists. Please set ZIM_HOME to the path where you want to install Zim Framework.${ZNORMAL}"
     return 1
   fi
 fi
@@ -267,32 +267,32 @@ for ZTEMPLATE in ${(k)ZTEMPLATES}; do
       print -u2 "${ZWARN}Existing backup found in ${ZBOLD}${(Dq+)OLD_USER_FILE}${ZNORMAL}"
       OLD_USER_FILE=${USER_FILE}.pre-zim-${(%):-%D{%Y%m%dT%H%M%S.%.}}
     done
-    if ERR=$(command mv -f ${USER_FILE} ${OLD_USER_FILE} 2>&1); then
+    if command mv -f ${USER_FILE} ${OLD_USER_FILE}; then
       print -R "${ZOKAY}Backed up existing file to ${ZBOLD}${(Dq+)OLD_USER_FILE}${ZNORMAL}"
     else
-      print -u2 -lR "${ZERROR}Error backing up existing file to ${ZBOLD}${(Dq+)OLD_USER_FILE}${ZNORMAL}" ${ERR}
+      print -u2 -R "${ZERROR}Error backing up existing file to ${ZBOLD}${(Dq+)OLD_USER_FILE}${ZNORMAL}"
       return 1
     fi
-    if ERR=$(print -R ${ZTEMPLATES[${ZTEMPLATE}]} | cat - ${OLD_USER_FILE} > ${USER_FILE} 2>&1); then
+    if print -R ${ZTEMPLATES[${ZTEMPLATE}]} | cat - ${OLD_USER_FILE} > ${USER_FILE}; then
       print -R "${ZOKAY}Prepended Zim Framework template to ${ZBOLD}${(Dq+)USER_FILE}${ZNORMAL}"
     else
-      print -u2 -lR "${ZERROR}Error prepending Zim Framework template to ${ZBOLD}${(Dq+)USER_FILE}${ZNORMAL}" ${ERR}
+      print -u2 -R "${ZERROR}Error prepending Zim Framework template to ${ZBOLD}${(Dq+)USER_FILE}${ZNORMAL}"
       return 1
     fi
   else
-    if ERR=$(print -Rn ${ZTEMPLATES[${ZTEMPLATE}]} > ${USER_FILE} 2>&1); then
+    if print -Rn ${ZTEMPLATES[${ZTEMPLATE}]} > ${USER_FILE}; then
       print -R "${ZOKAY}Copied Zim Framework template to ${ZBOLD}${(Dq+)USER_FILE}${ZNORMAL}"
     else
-      print -u2 -lR "${ZERROR}Error copying Zim Framework template to ${ZBOLD}${(Dq+)USER_FILE}${ZNORMAL}" ${ERR}
+      print -u2 -R "${ZERROR}Error copying Zim Framework template to ${ZBOLD}${(Dq+)USER_FILE}${ZNORMAL}"
       return 1
     fi
   fi
 done
 
-if ERR=$(source ${ZIM_HOME}/zimfw.zsh init -q 2>&1); then
+if source ${ZIM_HOME}/zimfw.zsh init -q; then
   print ${ZOKAY}'Installed modules.'
 else
-  print -u2 -lR ${ERR} "${ZERROR}Could not install modules.${ZNORMAL}"
+  print -u2 -R "${ZERROR}Could not install modules.${ZNORMAL}"
   return 1
 fi
 
