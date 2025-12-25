@@ -64,6 +64,18 @@ autoload -Uz is-at-least && if ! is-at-least 5.2; then
 fi
 print -R "${ZOKAY}Using Zsh version ${ZSH_VERSION}"
 
+# Check if Zsh is the default shell
+if [[ ${SHELL:t} == zsh ]]; then
+  print ${ZOKAY}'Zsh is your default shell.'
+else
+  readonly ZPATH==zsh
+  if command chsh -s ${ZPATH}; then
+    print -R "${ZOKAY}Changed your default shell to ${ZBOLD}${ZPATH}${ZNORMAL}"
+  else
+    print -u2 -R "${ZWARN}Could not change your default shell to ${ZBOLD}${ZPATH}${ZNORMALYELLOW}. Please manually change it later.${ZNORMAL}"
+  fi
+fi
+
 # Check ZIM_HOME
 if (( ! ${+ZIM_HOME} )); then
   ZIM_HOME=${(e)ZIM_HOME_STR}
@@ -80,18 +92,6 @@ if [[ -e ${ZIM_HOME} ]]; then
   else
     print -u2 -R "${ZERROR}ZIM_HOME already exists: ${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMALRED}. Please set ZIM_HOME to the path where you want to install Zim Framework.${ZNORMAL}"
     return 1
-  fi
-fi
-
-# Check if Zsh is the default shell
-if [[ ${SHELL:t} == zsh ]]; then
-  print ${ZOKAY}'Zsh is your default shell.'
-else
-  readonly ZPATH==zsh
-  if command chsh -s ${ZPATH}; then
-    print -R "${ZOKAY}Changed your default shell to ${ZBOLD}${ZPATH}${ZNORMAL}"
-  else
-    print -u2 -R "${ZWARN}Could not change your default shell to ${ZBOLD}${ZPATH}${ZNORMALYELLOW}. Please manually change it later.${ZNORMAL}"
   fi
 fi
 
