@@ -1,18 +1,18 @@
 # Check ZIM_HOME
 if (( ! ${+ZIM_HOME} )); then
-  print ${ZOKAY}'ZIM_HOME not set, using the default one.'
   ZIM_HOME=${(e)ZIM_HOME_STR}
+  print "${ZOKAY}ZIM_HOME not set, using the default: ${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMAL}"
 elif [[ ${ZIM_HOME} == ${(e)ZIM_HOME_STR} ]]; then
-  print ${ZOKAY}'Your ZIM_HOME is the default one.'
+  print "${ZOKAY}Your ZIM_HOME is the default: ${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMAL}"
 else
   ZIM_HOME_STR=$(_replace_home ${ZIM_HOME})
-  print -R "${ZOKAY}Your ZIM_HOME is customized to ${ZBOLD}${ZIM_HOME_STR}${ZNORMAL}"
+  print -R "${ZOKAY}Your ZIM_HOME is customized to ${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMAL}"
 fi
 if [[ -e ${ZIM_HOME} ]]; then
   if [[ -n ${ZIM_HOME}(#qN/^F) ]]; then
-    print ${ZOKAY}'ZIM_HOME already exists, but is empty.'
+    print "${ZOKAY}ZIM_HOME already exists, but is empty: ${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMAL}"
   else
-    print -u2 -R "${ZERROR}${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMALRED} already exists. Please set ZIM_HOME to the path where you want to install Zim Framework.${ZNORMAL}"
+    print -u2 -R "${ZERROR}ZIM_HOME already exists: ${ZBOLD}${(Dq+)ZIM_HOME}${ZNORMALRED}. Please set ZIM_HOME to the path where you want to install Zim Framework.${ZNORMAL}"
     return 1
   fi
 fi
